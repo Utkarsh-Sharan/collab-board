@@ -1,0 +1,24 @@
+{
+  "name": "collab-board",
+  "version": "1.0.0",
+  "description": "A project management platform made with MERN stack.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Utkarsh-Sharan/collab-board.git"
+  },
+  "keywords": [
+    "MERN",
+    "collab",
+    "fullstack"
+  ],
+  "author": "Utkarsh Sharan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Utkarsh-Sharan/collab-board/issues"
+  },
+  "homepage": "https://github.com/Utkarsh-Sharan/collab-board#readme"
+}
