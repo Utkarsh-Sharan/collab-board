@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/Utkarsh-Sharan/collab-board/issues"
   },
-  "homepage": "https://github.com/Utkarsh-Sharan/collab-board#readme"
+  "homepage": "https://github.com/Utkarsh-Sharan/collab-board#readme",
+  "devDependencies": {
+    "prettier": "3.7.4"
+  }
 }
