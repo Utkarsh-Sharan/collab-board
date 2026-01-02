@@ -18,6 +18,11 @@ app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 
+//Routes
+import authRouter from "./routes/auth.route.js";
+
+app.use("/api/auth", authRouter);
+
 app.get("/test", (req, res) => {
   res.send("Welcome to test!");
 });
