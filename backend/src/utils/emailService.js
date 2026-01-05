@@ -3,10 +3,10 @@ import nodemailer from "nodemailer";
 
 const sendEmail = async function (options) {
   const mailGenerator = new Mailgen({
-    theme: "dark",
+    theme: "default",
     product: {
       name: "CollabBoard",
-      link: "http://localhost:5173",
+      link: "http://localhost:5173", //TODO: change this to production site
     },
   });
 
@@ -40,10 +40,10 @@ const sendEmail = async function (options) {
   }
 };
 
-const forgotPasswordMailgenContent = (userName, passwordResetUrl) => {
+const forgotPasswordMailgenContent = (fullName, passwordResetUrl) => {
   return {
     body: {
-      name: userName,
+      name: fullName,
       intro: "We got a request to reset the password of your account.",
       action: {
         instructions: "To reset your password, click on the button below.",
