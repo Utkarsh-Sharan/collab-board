@@ -53,7 +53,20 @@ const userResetForgotPasswordValidator = () => {
     body("newPassword")
       .trim()
       .notEmpty()
-      .withMessage("New password is required!"),
+      .withMessage("New password is required!")
+      .isLength({ min: 6, max: 12 })
+      .withMessage("Password must be 6 to 12 characters long!"),
+  ];
+};
+
+const userChangeCurrentPasswordValidator = () => {
+  return [
+    body("oldPassword").notEmpty().withMessage("Old password is required!"),
+    body("newPassword")
+      .notEmpty()
+      .withMessage("New password is required!")
+      .isLength({ min: 6, max: 12 })
+      .withMessage("Password must be 6 to 12 characters long!"),
   ];
 };
 
@@ -62,4 +75,5 @@ export {
   userLoginValidator,
   userForgotPasswordValidator,
   userResetForgotPasswordValidator,
+  userChangeCurrentPasswordValidator,
 };

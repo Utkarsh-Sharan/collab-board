@@ -6,9 +6,16 @@ import {
   getCurrentUser,
   forgotPasswordRequest,
   resetForgotPassword,
+  changeCurrentPassword,
 } from "../controllers/auth.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { userForgotPasswordValidator, userLoginValidator, userRegisterValidator, userResetForgotPasswordValidator } from "../validators/index.js";
+import {
+  userForgotPasswordValidator,
+  userLoginValidator,
+  userRegisterValidator,
+  userResetForgotPasswordValidator,
+  userChangeCurrentPasswordValidator,
+} from "../validators/index.js";
 import { validate } from "../middlewares/validator.middleware.js";
 
 const router = Router();
@@ -26,5 +33,13 @@ router
 //Secured routes
 router.route("/current-user").post(verifyJWT, getCurrentUser);
 router.route("/logout").post(verifyJWT, logoutUser);
+router
+  .route("/change-current-password")
+  .post(
+    verifyJWT,
+    userChangeCurrentPasswordValidator(),
+    validate,
+    changeCurrentPassword,
+  );
 
 export default router;
