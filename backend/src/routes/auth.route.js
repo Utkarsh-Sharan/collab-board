@@ -7,6 +7,7 @@ import {
   forgotPasswordRequest,
   resetForgotPassword,
   changeCurrentPassword,
+  refreshAccessToken,
 } from "../controllers/auth.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import {
@@ -29,6 +30,7 @@ router
 router
   .route("/reset-password/:resetToken")
   .post(userResetForgotPasswordValidator(), validate, resetForgotPassword);
+router.route("/refresh-access-token").post(refreshAccessToken);
 
 //Secured routes
 router.route("/current-user").post(verifyJWT, getCurrentUser);

@@ -7,6 +7,7 @@ import {
   sendEmail,
 } from "../utils/emailService.js";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -215,6 +216,44 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Password changed successfully!"));
 });
 
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+  if (!incomingRefreshToken) throw new ApiError(401, "Unauthorized access!");
+
+  const decodedToken = jwt.verify(
+    incomingRefreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
+  );
+  const user = await User.findById(decodedToken?._id);
+
+  if (!user) throw new ApiError(401, "Invalid refresh token!");
+  if (incomingRefreshToken !== user?.refreshToken)
+    throw new ApiError(401, "Refresh token expired!");
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  const { accessToken, refreshToken: newRefreshToken } =
+    await generateAccessAndRefreshTokens(user._id);
+
+  user.refreshToken = newRefreshToken;
+  await user.save();
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", newRefreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        { accessToken, refreshToken: newRefreshToken },
+        "Refreshed access token!",
+      ),
+    );
+});
+
 export {
   registerUser,
   loginUser,
@@ -223,4 +262,5 @@ export {
   forgotPasswordRequest,
   resetForgotPassword,
   changeCurrentPassword,
+  refreshAccessToken,
 };
