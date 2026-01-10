@@ -1,5 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import crypto from "crypto";
+import { InviteStatusEnum, AvailableInviteStatus } from "../utils/constants.js";
+import { UserRolesEnum } from "../utils/constants.js";
 
 const inviteSchema = new Schema(
   {
@@ -19,21 +21,24 @@ const inviteSchema = new Schema(
     },
     role: {
       type: String,
-      default: "Viewer",
+      default: UserRolesEnum.VIEWER,
     },
     token: {
       type: String,
     },
+    tokenExpiry: {
+      type: Date,
+    },
     status: {
       type: String,
-      enum: ["Pending", "Accepted", "Expired", "Revoked"],
-      default: "Pending",
+      enum: AvailableInviteStatus,
+      default: InviteStatusEnum.PENDING,
     },
   },
   { timestamps: true },
 );
 
-inviteSchema.statics.generateInviteToken = () => {
+inviteSchema.methods.generateInviteToken = () => {
   const unhashedToken = crypto.randomBytes(20).toString("hex");
   const hashedToken = crypto
     .createHash("sha256")

@@ -1,5 +1,6 @@
 import { body } from "express-validator";
 
+//authentication
 const userRegisterValidator = () => {
   return [
     body("email")
@@ -69,6 +70,18 @@ const userChangeCurrentPasswordValidator = () => {
       .withMessage("Password must be 6 to 12 characters long!"),
   ];
 };
+
+//board
+const boardCreationValidator = () => {
+  return [
+    body("title")
+      .trim()
+      .notEmpty()
+      .withMessage("Title is required!")
+      .isLength({max: 50})
+      .withMessage("Title should be 50 characters long at max!"),
+  ]
+}
 
 export {
   userRegisterValidator,
