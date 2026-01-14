@@ -72,7 +72,7 @@ const userChangeCurrentPasswordValidator = () => {
 };
 
 //board
-const boardCreationValidator = () => {
+const boardCreateOrUpdateValidator = () => {
   return [
     body("title")
       .trim()
@@ -83,10 +83,24 @@ const boardCreationValidator = () => {
   ]
 }
 
+//invite
+const invitationValidator = () => {
+  return [
+    body("email")
+      .trim()
+      .notEmpty()
+      .withMessage("Email is required!")
+      .isEmail()
+      .withMessage("Invalid email!")
+  ]
+}
+
 export {
   userRegisterValidator,
   userLoginValidator,
   userForgotPasswordValidator,
   userResetForgotPasswordValidator,
   userChangeCurrentPasswordValidator,
+  boardCreateOrUpdateValidator,
+  invitationValidator,
 };

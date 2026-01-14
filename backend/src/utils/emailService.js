@@ -59,4 +59,27 @@ const forgotPasswordMailgenContent = (fullName, passwordResetUrl) => {
   };
 };
 
-export { sendEmail, forgotPasswordMailgenContent };
+const boardInvitationMailgenContent = (fullName, adminName, projectTitle, boardInvitationUrl) => {
+  return {
+    body: {
+      name: fullName,
+      intro: `You have been invited by ${adminName} for the project named ${projectTitle}.`,
+      action: {
+        instructions: "Click the button below if you want to join this project",
+        button: {
+          color: "#35c730",
+          text: "Join",
+          link: boardInvitationUrl,
+        },
+      },
+      outro:
+        "Need help, or have questions? Simply reply to this email, we'll be happy to help you.",
+    },
+  };
+}
+
+export {
+  sendEmail,
+  forgotPasswordMailgenContent,
+  boardInvitationMailgenContent,
+};

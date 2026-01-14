@@ -15,8 +15,7 @@ const inviteSchema = new Schema(
       required: true,
     },
     invitedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
       required: true,
     },
     role: {

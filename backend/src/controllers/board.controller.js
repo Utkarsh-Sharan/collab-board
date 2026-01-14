@@ -51,61 +51,64 @@ const getAllBoards = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, { boards }, "Fetched boards successfully!"));
-});
+}); //look again
 
 const getBoard = asyncHandler(async (req, res) => {
-  const boardId = req.board._id;
-  const userId = req.user._id;
-
-  const board = await Board.findOne({
-    _id: boardId,
-    "members.userId": userId,
-  });
-
-  if (!board) throw new ApiError(404, "Board not found or access denied!");
+  const board = req.board; //via authorization middleware
 
   return res
     .status(200)
     .json(new ApiResponse(200, { board }, "Fetch board successfully!"));
-});
+}); //test with another role
 
 const updateBoard = asyncHandler(async (req, res) => {
-  const boardId = req.board._id; //via authorization middleware
-  const { title, description } = req.body;
+  const member = req.member;
 
-  const board = await Board.findById(boardId);
-  if (!board) throw new ApiError(404, "Board not found!");
+  if (member.role !== UserRolesEnum.ADMIN)
+    throw new ApiError(
+      403,
+      "Only Admin(s) can update the board title/description!",
+    );
+
+  const board = req.board;
+  const { title, description } = req.body;
 
   board.title = title;
   board.description = description;
 
-  await board.save();
+  await board.save({ validateBeforeSave: false });
 
   return res
     .status(200)
     .json(new ApiResponse(200, { board }, "Board updated successfully!"));
-});
+}); //test with another role
 
 const deleteBoard = asyncHandler(async (req, res) => {
-  const boardId = req.board._id;
+  const member = req.member;
 
-  const deletedBoard = await Board.findByIdAndDelete(boardId);
+  if (member.role !== UserRolesEnum.ADMIN)
+    throw new ApiError(403, "Only Admin(s) can delete the board!");
+
+  const board = req.board;
+
+  await Task.deleteMany(board._id);
+  await List.deleteMany(board._id);
+
+  const deletedBoard = await Board.deleteOne(board._id);
   if (!deletedBoard)
     throw new ApiError(404, "Board not found or already deleted!");
 
-  await List.deleteMany({ boardId });
-  await Task.deleteMany({ boardId });
-
   return res
     .status(200)
-    .json(
-      new ApiResponse(200, { deletedBoard }, "Board deleted successfully!"),
-    );
-});
+    .json(new ApiResponse(200, {}, "Board deleted successfully!"));
+}); //test with another role
 
 const inviteMember = asyncHandler(async (req, res) => {
+  if (req.member.role !== UserRolesEnum.ADMIN)
+    throw new ApiError(400, "Only Admins are allowed to invite members!");
+  
   const { email, role } = req.body;
-  const boardId = req.board._id;
+  const board = req.board;
   const adminName = req.user.fullName;
 
   if (!AvailableUserRoles.includes(role))
@@ -114,20 +117,15 @@ const inviteMember = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) throw new ApiError(404, "User not found!");
 
-  const isAlreadyMember = await Board.exists({
-    _id: boardId,
-    "members.userId": user._id,
-  });
-
-  if (isAlreadyMember)
-    throw new ApiError(
-      400,
-      "Board not found or User is already a member of this board!",
-    );
+  const member = board.members.find(
+    (m) => m.userId.toString() === user._id.toString(),
+  );
+  if (member)
+    throw new ApiError(400, "User is already a member of this board!");
 
   const existingInvite = await Invite.findOne({
     email,
-    boardId,
+    boardId: board._id,
     status: InviteStatusEnum.PENDING,
   });
   if (existingInvite)
@@ -135,7 +133,7 @@ const inviteMember = asyncHandler(async (req, res) => {
 
   const invite = await Invite.create({
     email: email,
-    boardId: boardId,
+    boardId: board._id,
     invitedBy: adminName,
     role: role,
   });
@@ -156,6 +154,8 @@ const inviteMember = asyncHandler(async (req, res) => {
     subject: "Board invitation",
     mailgenContent: boardInvitationMailgenContent(
       user.fullName,
+      adminName,
+      board.title,
       `${process.env.BOARD_INVITATION_URL}/${unhashedToken}`,
     ),
   });
@@ -166,18 +166,17 @@ const inviteMember = asyncHandler(async (req, res) => {
       new ApiResponse(
         201,
         { createdInvite },
-        "Board invitation mail sent successfully!",
+        "Invitation created and board invitation mail sent successfully!",
       ),
     );
 });
 
 const acceptInvite = asyncHandler(async (req, res) => {
-  const { unhashedToken } = req.params;
-  const user = req.user;
+  const { inviteToken } = req.params;
 
   const hashedToken = crypto
     .createHash("sha256")
-    .update(unhashedToken)
+    .update(inviteToken)
     .digest("hex");
 
   const invite = await Invite.findOne({
@@ -192,7 +191,7 @@ const acceptInvite = asyncHandler(async (req, res) => {
   if (!board) throw new ApiError(404, "Board not found!");
 
   board.members.push({
-    userId: user._id,
+    userId: req.user._id,
     role: invite.role,
   });
 
@@ -204,8 +203,8 @@ const acceptInvite = asyncHandler(async (req, res) => {
 
   await Promise.all([
     board.save({ validateBeforeSave: false }),
-    invite.save({ validateBeforeSave: false })
-  ])
+    invite.save({ validateBeforeSave: false }),
+  ]);
 
   return res
     .status(200)
@@ -213,26 +212,21 @@ const acceptInvite = asyncHandler(async (req, res) => {
 });
 
 const changeMemberRole = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+  if (req.member.role !== UserRolesEnum.ADMIN)
+    throw new ApiError(400, "Only Admins are allowed to update the roles!");
+  
   const { newRole } = req.body;
-  const boardId = req.board._id;
 
   if (!AvailableUserRoles.includes(newRole))
-    throw new ApiError(400, "Invalid role!");
+    throw new ApiError(400, "Please provide a valid role!");
 
-  const board = await Board.findOne({
-    _id: boardId,
-    "members.userId": userId,
-  });
-  if (!board)
-    throw new ApiError(
-      400,
-      "Board not found or User is not a member of this board!",
-    );
-
+  const { memberId } = req.params;
+  const board = req.board;
   const member = board.members.find(
-    (m) => m.userId.toString() === userId.toString(),
+    (m) => m.userId.toString() === memberId.toString(),
   );
+
+  if (!member) throw new ApiError(400, "User is not a member of this board!");
 
   const prevRole = member.role;
   if (prevRole !== newRole) member.role = newRole;
@@ -250,33 +244,28 @@ const changeMemberRole = asyncHandler(async (req, res) => {
 });
 
 const removeMember = asyncHandler(async (req, res) => {
-  const boardId = req.board._id;
-  const userId = req.user._id;
+  const board = req.board;
+  const myself = req.member;
+  const memberToRemoveId = req.params.memberId;
 
-  const board = await Board.findOne({
-    _id: boardId,
-    "members.userId": userId,
-  });
-  if (!board)
-    throw new ApiError(
-      400,
-      "Board not found or User is not a member of this board!",
-    );
+  if (myself.role !== UserRolesEnum.ADMIN)
+    throw new ApiError(400, "Only Admins are allowed to remove member(s)!");
 
-  const member = board.members.find(
-    (m) => m.userId.toString() === userId.toString(),
+  const memberToRemove = board.members.find(
+    (m) => m.userId.toString() === memberToRemoveId.toString(),
   );
+  if (!memberToRemove)
+    throw new ApiError(400, "Member not found in this board!");
 
-  if (member.role === UserRolesEnum.ADMIN && board.adminCount === 1) {
+  if (memberToRemove.role === UserRolesEnum.ADMIN && board.adminCount === 1)
     throw new ApiError(400, "Cannot remove the last Admin from the board!");
-  }
 
   // Atomically remove member and decrement adminCount if needed
   await Board.updateOne(
-    { _id: boardId },
+    { _id: board._id },
     {
-      $pull: { "members.userId": userId },
-      ...(member.role === UserRolesEnum.ADMIN
+      $pull: { members: { userId: memberToRemoveId } },
+      ...(memberToRemove.role === UserRolesEnum.ADMIN
         ? { $inc: { adminCount: -1 } }
         : {}),
     },

@@ -24,8 +24,10 @@ app.use(cookieParser());
 
 //Routes
 import authRouter from "./routes/auth.route.js";
+import boardRouter from "./routes/board.route.js";
 
 app.use("/api/auth", authRouter);
+app.use("/api/boards", boardRouter);
 
 app.get("/test", (req, res) => {
   res.send("Welcome to test!");
