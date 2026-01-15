@@ -71,17 +71,17 @@ const userChangeCurrentPasswordValidator = () => {
   ];
 };
 
-//board
-const boardCreateOrUpdateValidator = () => {
+//title
+const titleValidator = () => {
   return [
     body("title")
       .trim()
       .notEmpty()
       .withMessage("Title is required!")
-      .isLength({max: 50})
+      .isLength({ max: 50 })
       .withMessage("Title should be 50 characters long at max!"),
-  ]
-}
+  ];
+};
 
 //invite
 const invitationValidator = () => {
@@ -91,9 +91,9 @@ const invitationValidator = () => {
       .notEmpty()
       .withMessage("Email is required!")
       .isEmail()
-      .withMessage("Invalid email!")
-  ]
-}
+      .withMessage("Invalid email!"),
+  ];
+};
 
 export {
   userRegisterValidator,
@@ -101,6 +101,6 @@ export {
   userForgotPasswordValidator,
   userResetForgotPasswordValidator,
   userChangeCurrentPasswordValidator,
-  boardCreateOrUpdateValidator,
+  titleValidator,
   invitationValidator,
 };

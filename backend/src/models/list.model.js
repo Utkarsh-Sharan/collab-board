@@ -13,7 +13,6 @@ const listSchema = new Schema(
     },
     position: {
       type: Number,
-      required: true,
     },
     tasks: [
       {

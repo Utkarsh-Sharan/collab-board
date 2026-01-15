@@ -51,25 +51,17 @@ const getAllBoards = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, { boards }, "Fetched boards successfully!"));
-}); //look again
+});
 
 const getBoard = asyncHandler(async (req, res) => {
-  const board = req.board; //via authorization middleware
+  const board = req.board;
 
   return res
     .status(200)
-    .json(new ApiResponse(200, { board }, "Fetch board successfully!"));
-}); //test with another role
+    .json(new ApiResponse(200, { board }, "Board fetched successfully!"));
+});
 
 const updateBoard = asyncHandler(async (req, res) => {
-  const member = req.member;
-
-  if (member.role !== UserRolesEnum.ADMIN)
-    throw new ApiError(
-      403,
-      "Only Admin(s) can update the board title/description!",
-    );
-
   const board = req.board;
   const { title, description } = req.body;
 
@@ -81,14 +73,9 @@ const updateBoard = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, { board }, "Board updated successfully!"));
-}); //test with another role
+});
 
 const deleteBoard = asyncHandler(async (req, res) => {
-  const member = req.member;
-
-  if (member.role !== UserRolesEnum.ADMIN)
-    throw new ApiError(403, "Only Admin(s) can delete the board!");
-
   const board = req.board;
 
   await Task.deleteMany(board._id);
@@ -101,12 +88,9 @@ const deleteBoard = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, {}, "Board deleted successfully!"));
-}); //test with another role
+});
 
 const inviteMember = asyncHandler(async (req, res) => {
-  if (req.member.role !== UserRolesEnum.ADMIN)
-    throw new ApiError(400, "Only Admins are allowed to invite members!");
-  
   const { email, role } = req.body;
   const board = req.board;
   const adminName = req.user.fullName;
@@ -212,9 +196,6 @@ const acceptInvite = asyncHandler(async (req, res) => {
 });
 
 const changeMemberRole = asyncHandler(async (req, res) => {
-  if (req.member.role !== UserRolesEnum.ADMIN)
-    throw new ApiError(400, "Only Admins are allowed to update the roles!");
-  
   const { newRole } = req.body;
 
   if (!AvailableUserRoles.includes(newRole))
@@ -245,11 +226,7 @@ const changeMemberRole = asyncHandler(async (req, res) => {
 
 const removeMember = asyncHandler(async (req, res) => {
   const board = req.board;
-  const myself = req.member;
   const memberToRemoveId = req.params.memberId;
-
-  if (myself.role !== UserRolesEnum.ADMIN)
-    throw new ApiError(400, "Only Admins are allowed to remove member(s)!");
 
   const memberToRemove = board.members.find(
     (m) => m.userId.toString() === memberToRemoveId.toString(),

@@ -12,39 +12,43 @@ import {
 } from "../controllers/board.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { verifyBoard } from "../middlewares/board.middleware.js";
-import {
-  boardCreateOrUpdateValidator,
-  invitationValidator,
-} from "../validators/index.js";
+import { verifyRole } from "../middlewares/role.middleware.js";
+import { titleValidator, invitationValidator } from "../validators/index.js";
 import { validate } from "../middlewares/validator.middleware.js";
 
 const router = Router();
 
 //Secured routes
-router
-  .route("/")
-  .post(boardCreateOrUpdateValidator(), validate, verifyJWT, createBoard);
+router.route("/").post(titleValidator(), validate, verifyJWT, createBoard);
 router.route("/").get(verifyJWT, getAllBoards);
-router.route("/:boardId").get(verifyJWT, verifyBoard, getBoard);
+router.route("/:boardId").get(verifyJWT, verifyBoard, verifyRole("viewBoard"), getBoard);
 router
   .route("/:boardId")
-  .put(
-    boardCreateOrUpdateValidator(),
+  .put(titleValidator(), validate, verifyJWT, verifyBoard, verifyRole("updateBoard"), updateBoard);
+router
+  .route("/:boardId")
+  .delete(verifyJWT, verifyBoard, verifyRole("deleteBoard"), deleteBoard);
+router
+  .route("/:boardId/invite")
+  .post(
+    invitationValidator(),
     validate,
     verifyJWT,
     verifyBoard,
-    updateBoard,
+    verifyRole("inviteMember"),
+    inviteMember,
   );
-router.route("/:boardId").delete(verifyJWT, verifyBoard, deleteBoard);
-router
-  .route("/:boardId/invite")
-  .post(invitationValidator(), validate, verifyJWT, verifyBoard, inviteMember);
 router.route("/:boardId/invite/:inviteToken").post(verifyJWT, acceptInvite);
 router
   .route("/:boardId/member/:memberId")
-  .patch(verifyJWT, verifyBoard, changeMemberRole);
+  .patch(
+    verifyJWT,
+    verifyBoard,
+    verifyRole("changeMemberRole"),
+    changeMemberRole,
+  );
 router
   .route("/:boardId/member/:memberId")
-  .delete(verifyJWT, verifyBoard, removeMember);
+  .delete(verifyJWT, verifyBoard, verifyRole("removeMember"), removeMember);
 
 export default router;
