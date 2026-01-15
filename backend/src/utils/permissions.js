@@ -3,7 +3,6 @@ import { AvailableUserRoles } from "./constants.js";
 const [admin, editor, viewer] = AvailableUserRoles;
 
 export const permissions = {
-  // createBoard: [admin],
   viewBoard: [admin, editor, viewer],
   updateBoard: [admin],
   deleteBoard: [admin],
