@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { List } from "../models/list.model.js";
-import { ApiError } from "../utils/Api-Error";
+import { ApiError } from "../utils/Api-Error.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const verifyList = asyncHandler(async (req, res, next) => {

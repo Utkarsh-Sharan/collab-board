@@ -10,6 +10,7 @@ const listSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Board",
       required: true,
+      index: true,
     },
     position: {
       type: Number,

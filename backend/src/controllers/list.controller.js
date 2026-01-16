@@ -2,15 +2,22 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/Api-Response.js";
 import { List } from "../models/list.model.js";
 import { Task } from "../models/task.model.js";
+import { Board } from "../models/board.model.js";
 
 const createList = asyncHandler(async (req, res) => {
   const board = req.board;
   const { title } = req.body;
 
+  const position = await List.countDocuments({ boardId: board._id });
+
   const newList = await List.create({
     title: title,
     boardId: board._id,
+    position,
   });
+
+  board.lists.push(newList._id);
+  await board.save({ validateBeforeSave: false });
 
   return res
     .status(201)
@@ -42,14 +49,15 @@ const updateList = asyncHandler(async (req, res) => {
 });
 
 const deleteList = asyncHandler(async (req, res) => {
-  const boardId = req.board._id;
+  const board = req.board;
   const listId = req.list._id;
 
   await Task.deleteMany({
-    $and: [{ boardId }, { listId }],
+    $and: [{ boardId: board._id }, { listId }],
   });
 
-  await List.deleteOne({_id: listId});
+  await List.deleteOne({ _id: listId });
+  await Board.updateOne({ _id: board._id }, { $pull: { lists: listId } });
 
   return res
     .status(200)
