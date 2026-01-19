@@ -18,24 +18,24 @@ const router = Router();
 router
   .route("/:boardId/lists")
   .post(
+    verifyJWT,
+    verifyRole("createList"),
     titleValidator(),
     validate,
-    verifyJWT,
     verifyBoard,
-    verifyRole("createList"),
     createList,
   );
 router
   .route("/:boardId/lists")
-  .get(verifyJWT, verifyBoard, verifyRole("viewList"), getAllLists);
+  .get(verifyJWT, verifyRole("viewList"), verifyBoard, getAllLists);
 router
   .route("/:boardId/lists/:listId")
   .put(
+    verifyJWT,
+    verifyRole("updateList"),
     titleValidator(),
     validate,
-    verifyJWT,
     verifyBoard,
-    verifyRole("updateList"),
     verifyList,
     updateList,
   );
@@ -43,8 +43,8 @@ router
   .route("/:boardId/lists/:listId")
   .delete(
     verifyJWT,
-    verifyBoard,
     verifyRole("deleteList"),
+    verifyBoard,
     verifyList,
     deleteList,
   );
