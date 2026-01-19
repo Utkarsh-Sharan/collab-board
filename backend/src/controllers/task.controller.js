@@ -10,7 +10,7 @@ const createTask = asyncHandler(async (req, res) => {
   const { title, description, assignedTo, dueDate, labels } = req.body;
 
   if (!assignedTo) throw new ApiError(400, "Assign task to at least 1 user!");
-
+  
   //O(logn) (or even O(1)) operation if index and query design are correct
   const lastTask = await Task.findOne({ boardId, listId: list._id })
     .sort("-position")

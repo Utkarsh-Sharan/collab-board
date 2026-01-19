@@ -21,22 +21,22 @@ router
   .route("/:boardId/lists/:listId/tasks")
   .post(
     verifyJWT,
+    verifyBoard,
     verifyRole("createTask"),
     titleValidator(),
     validate,
-    verifyBoard,
     verifyList,
     createTask,
   );
 router
   .route("/:boardId/lists/:listId/tasks")
-  .get(verifyJWT, verifyRole("viewTask"), verifyBoard, verifyList, getAllTasks);
+  .get(verifyJWT, verifyBoard, verifyRole("viewTask"), verifyList, getAllTasks);
 router
   .route("/:boardId/lists/:listId/tasks/:taskId")
   .put(
     verifyJWT,
-    verifyRole("updateTask"),
     verifyBoard,
+    verifyRole("updateTask"),
     verifyList,
     verifyTask,
     updateTask,
@@ -45,8 +45,8 @@ router
   .route("/:boardId/lists/:listId/tasks/:taskId/move")
   .patch(
     verifyJWT,
-    verifyRole("moveTask"),
     verifyBoard,
+    verifyRole("moveTask"),
     verifyList,
     verifyTask,
     moveTask,
@@ -55,9 +55,11 @@ router
   .route("/:boardId/lists/:listId/tasks/:taskId")
   .delete(
     verifyJWT,
-    verifyRole("deleteTask"),
     verifyBoard,
+    verifyRole("deleteTask"),
     verifyList,
     verifyTask,
     deleteTask,
   );
+
+export default router;

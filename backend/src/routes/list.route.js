@@ -19,23 +19,23 @@ router
   .route("/:boardId/lists")
   .post(
     verifyJWT,
+    verifyBoard,
     verifyRole("createList"),
     titleValidator(),
     validate,
-    verifyBoard,
     createList,
   );
 router
   .route("/:boardId/lists")
-  .get(verifyJWT, verifyRole("viewList"), verifyBoard, getAllLists);
+  .get(verifyJWT, verifyBoard, verifyRole("viewList"), getAllLists);
 router
   .route("/:boardId/lists/:listId")
   .put(
     verifyJWT,
+    verifyBoard,
     verifyRole("updateList"),
     titleValidator(),
     validate,
-    verifyBoard,
     verifyList,
     updateList,
   );
@@ -43,8 +43,8 @@ router
   .route("/:boardId/lists/:listId")
   .delete(
     verifyJWT,
-    verifyRole("deleteList"),
     verifyBoard,
+    verifyRole("deleteList"),
     verifyList,
     deleteList,
   );
