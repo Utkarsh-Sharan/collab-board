@@ -15,8 +15,12 @@ import { verifyBoard } from "../middlewares/board.middleware.js";
 import { verifyRole } from "../middlewares/role.middleware.js";
 import { titleValidator, invitationValidator } from "../validators/index.js";
 import { validate } from "../middlewares/validator.middleware.js";
+import { verifyArcjet } from "../middlewares/arcjet.middleware.js";
 
 const router = Router();
+
+//Rate-limiting
+// router.use(verifyArcjet); TODO: Un-comment this
 
 //Secured routes
 router.route("/").post(titleValidator(), validate, verifyJWT, createBoard);

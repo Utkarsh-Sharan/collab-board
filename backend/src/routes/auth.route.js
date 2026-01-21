@@ -18,8 +18,12 @@ import {
   userChangeCurrentPasswordValidator,
 } from "../validators/index.js";
 import { validate } from "../middlewares/validator.middleware.js";
+import { verifyArcjet } from "../middlewares/arcjet.middleware.js";
 
 const router = Router();
+
+//Rate-limiting
+// router.use(verifyArcjet); TODO: Un-comment this
 
 //Un-secured routes
 router.route("/register").post(userRegisterValidator(), validate, registerUser);

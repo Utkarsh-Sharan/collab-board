@@ -13,8 +13,12 @@ import { verifyBoard } from "../middlewares/board.middleware.js";
 import { verifyList } from "../middlewares/list.middleware.js";
 import { verifyTask } from "../middlewares/task.middleware.js";
 import { verifyRole } from "../middlewares/role.middleware.js";
+import { verifyArcjet } from "../middlewares/arcjet.middleware.js";
 
 const router = Router();
+
+//Rate-limiting
+// router.use(verifyArcjet); TODO: Un-comment this
 
 //Secured routes
 router
