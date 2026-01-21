@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { UserRolesEnum, AvailableUserRoles } from "../utils/constants.js";
 
 const boardSchema = new Schema(
   {
@@ -14,6 +15,10 @@ const boardSchema = new Schema(
       ref: "User",
       required: true,
     },
+    adminCount: {
+      type: Number,
+      default: 0,
+    },
     members: [
       {
         userId: {
@@ -23,8 +28,8 @@ const boardSchema = new Schema(
         },
         role: {
           type: String,
-          enum: ["Admin", "Member", "Viewer"],
-          default: "Viewer",
+          enum: AvailableUserRoles,
+          default: UserRolesEnum.VIEWER,
         },
       },
     ],
@@ -37,5 +42,7 @@ const boardSchema = new Schema(
   },
   { timestamps: true },
 );
+
+boardSchema.index({ "members.userId": 1 });
 
 export const Board = mongoose.model("Board", boardSchema);

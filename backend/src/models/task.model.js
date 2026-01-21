@@ -12,12 +12,10 @@ const taskSchema = new Schema(
     boardId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Board",
-      required: true,
     },
     listId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "List",
-      required: true,
     },
     assignedTo: [
       {
@@ -34,10 +32,11 @@ const taskSchema = new Schema(
     },
     position: {
       type: Number,
-      required: true,
     },
   },
   { timestamps: true },
 );
+
+taskSchema.index({ boardId: 1, listId: 1, position: -1 });
 
 export const Task = mongoose.model("Task", taskSchema);

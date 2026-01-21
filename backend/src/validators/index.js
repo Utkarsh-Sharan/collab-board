@@ -1,5 +1,6 @@
 import { body } from "express-validator";
 
+//authentication
 const userRegisterValidator = () => {
   return [
     body("email")
@@ -70,10 +71,36 @@ const userChangeCurrentPasswordValidator = () => {
   ];
 };
 
+//title
+const titleValidator = () => {
+  return [
+    body("title")
+      .trim()
+      .notEmpty()
+      .withMessage("Title is required!")
+      .isLength({ max: 50 })
+      .withMessage("Title should be 50 characters long at max!"),
+  ];
+};
+
+//invite
+const invitationValidator = () => {
+  return [
+    body("email")
+      .trim()
+      .notEmpty()
+      .withMessage("Email is required!")
+      .isEmail()
+      .withMessage("Invalid email!"),
+  ];
+};
+
 export {
   userRegisterValidator,
   userLoginValidator,
   userForgotPasswordValidator,
   userResetForgotPasswordValidator,
   userChangeCurrentPasswordValidator,
+  titleValidator,
+  invitationValidator,
 };
