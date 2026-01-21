@@ -24,11 +24,13 @@ app.use(cookieParser());
 
 //Routes
 import authRouter from "./routes/auth.route.js";
+import userRouter from "./routes/user.route.js";
 import boardRouter from "./routes/board.route.js";
 import listRouter from "./routes/list.route.js";
 import taskrouter from "./routes/task.route.js";
 
 app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
 app.use("/api/boards", boardRouter, listRouter, taskrouter);
 
 app.get("/test", (req, res) => {

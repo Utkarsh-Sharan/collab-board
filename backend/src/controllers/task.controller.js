@@ -10,6 +10,7 @@ const createTask = asyncHandler(async (req, res) => {
   const { title, description, assignedTo, dueDate, labels } = req.body;
 
   if (!assignedTo) throw new ApiError(400, "Assign task to at least 1 user!");
+  const date = new Date(dueDate);
   
   //O(logn) (or even O(1)) operation if index and query design are correct
   const lastTask = await Task.findOne({ boardId, listId: list._id })
@@ -21,7 +22,7 @@ const createTask = asyncHandler(async (req, res) => {
     title,
     description,
     assignedTo,
-    dueDate,
+    dueDate: date,
     labels,
     position,
     boardId,
@@ -119,6 +120,11 @@ const moveTask = asyncHandler(async (req, res) => {
   task.position = destinationPosition;
   await task.save();
 
+  if(sourceListId !== destinationListId){
+    await List.updateOne({_id: sourceListId}, {$pull: {tasks: task._id}});
+    await List.updateOne({_id: destinationListId}, {$push: {tasks: task._id}});
+  }
+
   return res
     .status(200)
     .json(
@@ -130,7 +136,7 @@ const deleteTask = asyncHandler(async (req, res) => {
   const list = req.list;
   const taskId = req.task._id;
 
-  await Task.deleteOne({ taskId });
+  await Task.deleteOne({ _id: taskId });
   await List.updateOne({ _id: list._id }, { $pull: { tasks: taskId } });
 
   return res
