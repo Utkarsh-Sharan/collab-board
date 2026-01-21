@@ -1,8 +1,12 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
 
 const app = express();
+
+//Secure HTTP headers
+app.use(helmet());
 
 //CORS config
 if (process.env.NODE_ENV !== "production") {
