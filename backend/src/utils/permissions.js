@@ -18,4 +18,5 @@ export const permissions = {
   updateTask: [admin, editor],
   moveTask: [admin, editor],
   deleteTask: [admin, editor],
+  restoreTask: [admin, editor],
 };

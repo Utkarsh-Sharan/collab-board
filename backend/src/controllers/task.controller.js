@@ -164,4 +164,40 @@ const deleteTask = asyncHandler(async (req, res) => {
     );
 });
 
-export { createTask, getAllTasks, updateTask, moveTask, deleteTask };
+const restoreDeletedTask = asyncHandler(async (req, res) => {
+  const deletedTask = req.deletedTask;
+
+  await Task.updateMany(
+    {
+      listId: deleteTask.listId,
+      isDeleted: false,
+      position: { $gt: deletedTask.position },
+    },
+    { $inc: { position: 1 } },
+  );
+
+  deletedTask.isDeleted = false;
+  deletedTask.deletedAt = undefined;
+  deletedTask.deletedBy = undefined;
+
+  await deleteTask.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { restoredTask: deletedTask },
+        "Restored task successfully!",
+      ),
+    );
+});
+
+export {
+  createTask,
+  getAllTasks,
+  updateTask,
+  moveTask,
+  deleteTask,
+  restoreDeletedTask,
+};
