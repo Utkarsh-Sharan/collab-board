@@ -169,9 +169,9 @@ const restoreDeletedTask = asyncHandler(async (req, res) => {
 
   await Task.updateMany(
     {
-      listId: deleteTask.listId,
+      listId: deletedTask.listId,
       isDeleted: false,
-      position: { $gt: deletedTask.position },
+      position: { $gte: deletedTask.position },
     },
     { $inc: { position: 1 } },
   );
@@ -180,7 +180,7 @@ const restoreDeletedTask = asyncHandler(async (req, res) => {
   deletedTask.deletedAt = undefined;
   deletedTask.deletedBy = undefined;
 
-  await deleteTask.save({ validateBeforeSave: false });
+  await deletedTask.save({ validateBeforeSave: false });
 
   return res
     .status(200)
