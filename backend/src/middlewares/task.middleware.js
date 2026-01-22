@@ -13,6 +13,7 @@ export const verifyTask = asyncHandler(async (req, res, next) => {
   const task = await Task.findOne({
     _id: taskId,
     listId: list._id,
+    isDeleted: false,
   });
   if (!task) throw new ApiError(404, "Task not found!");
 
