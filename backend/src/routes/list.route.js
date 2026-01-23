@@ -9,7 +9,7 @@ import { titleValidator } from "../validators/index.js";
 import { validate } from "../middlewares/validator.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { verifyBoard } from "../middlewares/board.middleware.js";
-import { verifyList } from "../middlewares/list.middleware.js";
+import { verifyActiveList } from "../middlewares/list.middleware.js";
 import { verifyRole } from "../middlewares/role.middleware.js";
 import { verifyArcjet } from "../middlewares/arcjet.middleware.js";
 
@@ -40,7 +40,7 @@ router
     verifyRole("updateList"),
     titleValidator(),
     validate,
-    verifyList,
+    verifyActiveList,
     updateList,
   );
 router
@@ -49,7 +49,7 @@ router
     verifyJWT,
     verifyBoard,
     verifyRole("deleteList"),
-    verifyList,
+    verifyActiveList,
     deleteList,
   );
 
