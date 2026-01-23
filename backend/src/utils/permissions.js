@@ -13,6 +13,7 @@ export const permissions = {
   viewList: [admin, editor, viewer],
   updateList: [admin, editor],
   deleteList: [admin, editor],
+  restoreList: [admin, editor],
   createTask: [admin, editor],
   viewTask: [admin, editor, viewer],
   updateTask: [admin, editor],

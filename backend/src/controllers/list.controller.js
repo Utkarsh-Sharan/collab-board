@@ -81,7 +81,13 @@ const deleteList = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "List deleted successfully!"));
+    .json(
+      new ApiResponse(
+        200,
+        { deletedListId: list._id },
+        "List deleted successfully!",
+      ),
+    );
 });
 
 const restoreDeletedList = asyncHandler(async (req, res) => {
@@ -92,7 +98,7 @@ const restoreDeletedList = asyncHandler(async (req, res) => {
     {
       boardId: deletedList.boardId,
       isDeleted: false,
-      position: { $gt: deletedList.position },
+      position: { $gte: deletedList.position },
     },
     { $inc: { position: 1 } },
   );
@@ -110,8 +116,7 @@ const restoreDeletedList = asyncHandler(async (req, res) => {
     isDeleted: true,
   });
 
-  for(let task of deletedTasks)
-    await restoreTask(task);
+  for (let task of deletedTasks) await restoreTask(task);
 
   return res
     .status(200)
