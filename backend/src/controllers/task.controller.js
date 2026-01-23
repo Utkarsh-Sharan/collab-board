@@ -3,6 +3,7 @@ import { ApiResponse } from "../utils/Api-Response.js";
 import { List } from "../models/list.model.js";
 import { Task } from "../models/task.model.js";
 import { ApiError } from "../utils/Api-Error.js";
+import { restoreTask } from "../services/task.service.js";
 
 const createTask = asyncHandler(async (req, res) => {
   const boardId = req.board._id;
@@ -167,27 +168,14 @@ const deleteTask = asyncHandler(async (req, res) => {
 const restoreDeletedTask = asyncHandler(async (req, res) => {
   const deletedTask = req.deletedTask;
 
-  await Task.updateMany(
-    {
-      listId: deletedTask.listId,
-      isDeleted: false,
-      position: { $gte: deletedTask.position },
-    },
-    { $inc: { position: 1 } },
-  );
-
-  deletedTask.isDeleted = false;
-  deletedTask.deletedAt = undefined;
-  deletedTask.deletedBy = undefined;
-
-  await deletedTask.save({ validateBeforeSave: false });
+  const restoredTask = await restoreTask(deletedTask);
 
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        { restoredTask: deletedTask },
+        { restoredTask },
         "Restored task successfully!",
       ),
     );
