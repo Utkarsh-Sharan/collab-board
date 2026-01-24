@@ -3,6 +3,7 @@ import { ApiResponse } from "../utils/Api-Response.js";
 import { List } from "../models/list.model.js";
 import { Task } from "../models/task.model.js";
 import { restoreList } from "../services/list.service.js";
+import { restoreTask } from "../services/task.service.js";
 
 const createList = asyncHandler(async (req, res) => {
   const board = req.board;
@@ -93,14 +94,22 @@ const deleteList = asyncHandler(async (req, res) => {
 const restoreDeletedList = asyncHandler(async (req, res) => {
   const deletedList = req.deletedList;
 
-  const restoredList = await restoreList(deletedList);
+  const restoredListId = await restoreList(deletedList);
+
+  //Restore all tasks of deleted list
+  const deletedTasks = await Task.find({
+    listId: deletedList._id,
+    isDeleted: true,
+  });
+
+  for (const task of deletedTasks) await restoreTask(task);
 
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        { restoredListId: restoredList._id },
+        { restoredListId: restoredListId },
         "Restored list successfully!",
       ),
     );

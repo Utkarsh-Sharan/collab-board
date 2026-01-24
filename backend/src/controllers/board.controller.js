@@ -16,6 +16,9 @@ import {
   boardInvitationMailgenContent,
 } from "../utils/emailService.js";
 import crypto from "crypto";
+import { restoreList } from "../services/list.service.js";
+import { restoreTask } from "../services/task.service.js";
+import { restoreBoard } from "../services/board.service.js";
 
 const createBoard = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
@@ -105,7 +108,29 @@ const deleteBoard = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, {deletedBoardId: board._id}, "Board deleted successfully!"));
+    .json(
+      new ApiResponse(
+        200,
+        { deletedBoardId: board._id },
+        "Board deleted successfully!",
+      ),
+    );
+});
+
+const restoreDeletedBoard = asyncHandler(async (req, res) => {
+  const deletedBoard = req.deletedBoard;
+
+  const restoredBoardId = await restoreBoard(deletedBoard);
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { restoredBoardId: restoredBoardId },
+        "Board restored successfully!",
+      ),
+    );
 });
 
 const inviteMember = asyncHandler(async (req, res) => {
@@ -277,6 +302,7 @@ export {
   getBoard,
   updateBoard,
   deleteBoard,
+  restoreDeletedBoard,
   inviteMember,
   acceptInvite,
   changeMemberRole,

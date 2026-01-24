@@ -168,16 +168,12 @@ const deleteTask = asyncHandler(async (req, res) => {
 const restoreDeletedTask = asyncHandler(async (req, res) => {
   const deletedTask = req.deletedTask;
 
-  const restoredTask = await restoreTask(deletedTask);
+  const restoredTaskId = await restoreTask(deletedTask);
 
   return res
     .status(200)
     .json(
-      new ApiResponse(
-        200,
-        { restoredTask },
-        "Restored task successfully!",
-      ),
+      new ApiResponse(200, { restoredTaksId: restoredTaskId }, "Restored task successfully!"),
     );
 });
 

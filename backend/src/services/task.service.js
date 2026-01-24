@@ -15,4 +15,6 @@ export const restoreTask = async (deletedTask) => {
   deletedTask.deletedBy = undefined;
 
   await deletedTask.save({ validateBeforeSave: false });
+
+  return deletedTask._id;
 };
