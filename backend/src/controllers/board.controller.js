@@ -46,6 +46,7 @@ const getAllBoards = asyncHandler(async (req, res) => {
 
   const boards = await Board.find({
     "members.userId": userId,
+    isDeleted: false,
   });
 
   return res
@@ -78,16 +79,33 @@ const updateBoard = asyncHandler(async (req, res) => {
 const deleteBoard = asyncHandler(async (req, res) => {
   const board = req.board;
 
-  await Task.deleteMany(board._id);
-  await List.deleteMany(board._id);
+  await Task.updateMany(
+    { boardId: board._id, isDeleted: false },
+    {
+      isDeleted: true,
+      deletedAt: new Date(),
+      deletedBy: req.user._id,
+    },
+  );
 
-  const deletedBoard = await Board.deleteOne(board._id);
-  if (!deletedBoard)
-    throw new ApiError(404, "Board not found or already deleted!");
+  await List.updateMany(
+    { boardId: board._id, isDeleted: false },
+    {
+      isDeleted: true,
+      deletedAt: new Date(),
+      deletedBy: req.user._id,
+    },
+  );
+
+  board.isDeleted = true;
+  board.deletedAt = new Date();
+  board.deletedBy = req.user._id;
+
+  await board.save();
 
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "Board deleted successfully!"));
+    .json(new ApiResponse(200, {deletedBoardId: board._id}, "Board deleted successfully!"));
 });
 
 const inviteMember = asyncHandler(async (req, res) => {
