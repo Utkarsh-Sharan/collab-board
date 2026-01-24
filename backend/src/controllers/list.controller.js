@@ -55,18 +55,19 @@ const updateList = asyncHandler(async (req, res) => {
 
 const deleteList = asyncHandler(async (req, res) => {
   const list = req.list;
+  const now = new Date();
 
   await Task.updateMany(
     { listId: list._id, isDeleted: false },
     {
       isDeleted: true,
-      deletedAt: new Date(),
+      deletedAt: now,
       deletedBy: req.user._id,
     },
   );
 
   list.isDeleted = true;
-  list.deletedAt = new Date();
+  list.deletedAt = now;
   list.deletedBy = req.user._id;
 
   await list.save();

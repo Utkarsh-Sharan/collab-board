@@ -81,12 +81,13 @@ const updateBoard = asyncHandler(async (req, res) => {
 
 const deleteBoard = asyncHandler(async (req, res) => {
   const board = req.board;
+  const now = new Date();
 
   await Task.updateMany(
     { boardId: board._id, isDeleted: false },
     {
       isDeleted: true,
-      deletedAt: new Date(),
+      deletedAt: now,
       deletedBy: req.user._id,
     },
   );
@@ -95,13 +96,13 @@ const deleteBoard = asyncHandler(async (req, res) => {
     { boardId: board._id, isDeleted: false },
     {
       isDeleted: true,
-      deletedAt: new Date(),
+      deletedAt: now,
       deletedBy: req.user._id,
     },
   );
 
   board.isDeleted = true;
-  board.deletedAt = new Date();
+  board.deletedAt = now;
   board.deletedBy = req.user._id;
 
   await board.save();
