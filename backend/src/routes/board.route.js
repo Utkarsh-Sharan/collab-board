@@ -11,7 +11,7 @@ import {
   removeMember,
 } from "../controllers/board.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { verifyBoard } from "../middlewares/board.middleware.js";
+import { verifyActiveBoard } from "../middlewares/board.middleware.js";
 import { verifyRole } from "../middlewares/role.middleware.js";
 import { titleValidator, invitationValidator } from "../validators/index.js";
 import { validate } from "../middlewares/validator.middleware.js";
@@ -25,20 +25,29 @@ const router = Router();
 //Secured routes
 router.route("/").post(titleValidator(), validate, verifyJWT, createBoard);
 router.route("/").get(verifyJWT, getAllBoards);
-router.route("/:boardId").get(verifyJWT, verifyBoard, verifyRole("viewBoard"), getBoard);
 router
   .route("/:boardId")
-  .put(titleValidator(), validate, verifyJWT, verifyBoard, verifyRole("updateBoard"), updateBoard);
+  .get(verifyJWT, verifyActiveBoard, verifyRole("viewBoard"), getBoard);
 router
   .route("/:boardId")
-  .delete(verifyJWT, verifyBoard, verifyRole("deleteBoard"), deleteBoard);
+  .put(
+    titleValidator(),
+    validate,
+    verifyJWT,
+    verifyActiveBoard,
+    verifyRole("updateBoard"),
+    updateBoard,
+  );
+router
+  .route("/:boardId")
+  .delete(verifyJWT, verifyActiveBoard, verifyRole("deleteBoard"), deleteBoard);
 router
   .route("/:boardId/invite")
   .post(
     invitationValidator(),
     validate,
     verifyJWT,
-    verifyBoard,
+    verifyActiveBoard,
     verifyRole("inviteMember"),
     inviteMember,
   );
@@ -47,12 +56,17 @@ router
   .route("/:boardId/member/:memberId")
   .patch(
     verifyJWT,
-    verifyBoard,
+    verifyActiveBoard,
     verifyRole("changeMemberRole"),
     changeMemberRole,
   );
 router
   .route("/:boardId/member/:memberId")
-  .delete(verifyJWT, verifyBoard, verifyRole("removeMember"), removeMember);
+  .delete(
+    verifyJWT,
+    verifyActiveBoard,
+    verifyRole("removeMember"),
+    removeMember,
+  );
 
 export default router;

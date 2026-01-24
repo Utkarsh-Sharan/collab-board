@@ -6,6 +6,7 @@ export const permissions = {
   viewBoard: [admin, editor, viewer],
   updateBoard: [admin],
   deleteBoard: [admin],
+  restoreBoard: [admin],
   inviteMember: [admin],
   changeMemberRole: [admin],
   removeMember: [admin],

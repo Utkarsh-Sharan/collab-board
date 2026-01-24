@@ -10,7 +10,7 @@ import {
 import { titleValidator } from "../validators/index.js";
 import { validate } from "../middlewares/validator.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { verifyBoard } from "../middlewares/board.middleware.js";
+import { verifyActiveBoard } from "../middlewares/board.middleware.js";
 import { verifyActiveList } from "../middlewares/list.middleware.js";
 import {
   verifyActiveTask,
@@ -25,7 +25,7 @@ const router = Router();
 // router.use(verifyArcjet); TODO: Un-comment this
 
 //Secured routes
-const verifyUserAndBoard = [verifyJWT, verifyBoard];
+const verifyUserAndBoard = [verifyJWT, verifyActiveBoard];
 const verifyActiveListAndActiveTask = [verifyActiveList, verifyActiveTask];
 const verifyActiveListAndDeletedTask = [verifyActiveList, verifyDeletedTask];
 
