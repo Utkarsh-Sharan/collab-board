@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/Api-Response.js";
 import { List } from "../models/list.model.js";
 import { Task } from "../models/task.model.js";
-import { restoreTask } from "../services/task.service.js";
+import { restoreList } from "../services/list.service.js";
 
 const createList = asyncHandler(async (req, res) => {
   const board = req.board;
@@ -93,37 +93,14 @@ const deleteList = asyncHandler(async (req, res) => {
 const restoreDeletedList = asyncHandler(async (req, res) => {
   const deletedList = req.deletedList;
 
-  //Make space for active lists whose position > deleted list's position
-  await List.updateMany(
-    {
-      boardId: deletedList.boardId,
-      isDeleted: false,
-      position: { $gte: deletedList.position },
-    },
-    { $inc: { position: 1 } },
-  );
-
-  //Restore deleted list
-  deletedList.isDeleted = false;
-  deletedList.deletedAt = undefined;
-  deletedList.deletedBy = undefined;
-
-  await deletedList.save({ validateBeforeSave: false });
-
-  //Restore all tasks of deleted list
-  const deletedTasks = await Task.find({
-    listId: deletedList._id,
-    isDeleted: true,
-  });
-
-  for (let task of deletedTasks) await restoreTask(task);
+  const restoredList = await restoreList(deletedList);
 
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        { restoredList: deletedList },
+        { restoredListId: restoredList._id },
         "Restored list successfully!",
       ),
     );
