@@ -5,13 +5,17 @@ import {
   getBoard,
   updateBoard,
   deleteBoard,
+  restoreDeletedBoard,
   inviteMember,
   acceptInvite,
   changeMemberRole,
   removeMember,
 } from "../controllers/board.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { verifyBoard } from "../middlewares/board.middleware.js";
+import {
+  verifyActiveBoard,
+  verifyDeletedBoard,
+} from "../middlewares/board.middleware.js";
 import { verifyRole } from "../middlewares/role.middleware.js";
 import { titleValidator, invitationValidator } from "../validators/index.js";
 import { validate } from "../middlewares/validator.middleware.js";
@@ -23,22 +27,39 @@ const router = Router();
 // router.use(verifyArcjet); TODO: Un-comment this
 
 //Secured routes
-router.route("/").post(titleValidator(), validate, verifyJWT, createBoard);
+const verifyUserAndActiveBoard = [verifyJWT, verifyActiveBoard];
+
+router.route("/").post(verifyJWT, titleValidator(), validate, createBoard);
 router.route("/").get(verifyJWT, getAllBoards);
-router.route("/:boardId").get(verifyJWT, verifyBoard, verifyRole("viewBoard"), getBoard);
 router
   .route("/:boardId")
-  .put(titleValidator(), validate, verifyJWT, verifyBoard, verifyRole("updateBoard"), updateBoard);
+  .get(verifyUserAndActiveBoard, verifyRole("viewBoard"), getBoard);
 router
   .route("/:boardId")
-  .delete(verifyJWT, verifyBoard, verifyRole("deleteBoard"), deleteBoard);
+  .put(
+    verifyUserAndActiveBoard,
+    titleValidator(),
+    validate,
+    verifyRole("updateBoard"),
+    updateBoard,
+  );
+router
+  .route("/:boardId")
+  .delete(verifyUserAndActiveBoard, verifyRole("deleteBoard"), deleteBoard);
+router
+  .route("/:boardId/restore")
+  .patch(
+    verifyJWT,
+    verifyDeletedBoard,
+    verifyRole("restoreBoard"),
+    restoreDeletedBoard,
+  );
 router
   .route("/:boardId/invite")
   .post(
+    verifyUserAndActiveBoard,
     invitationValidator(),
     validate,
-    verifyJWT,
-    verifyBoard,
     verifyRole("inviteMember"),
     inviteMember,
   );
@@ -46,13 +67,12 @@ router.route("/:boardId/invite/:inviteToken").post(verifyJWT, acceptInvite);
 router
   .route("/:boardId/member/:memberId")
   .patch(
-    verifyJWT,
-    verifyBoard,
+    verifyUserAndActiveBoard,
     verifyRole("changeMemberRole"),
     changeMemberRole,
   );
 router
   .route("/:boardId/member/:memberId")
-  .delete(verifyJWT, verifyBoard, verifyRole("removeMember"), removeMember);
+  .delete(verifyUserAndActiveBoard, verifyRole("removeMember"), removeMember);
 
 export default router;

@@ -3,6 +3,7 @@ import { ApiResponse } from "../utils/Api-Response.js";
 import { List } from "../models/list.model.js";
 import { Task } from "../models/task.model.js";
 import { ApiError } from "../utils/Api-Error.js";
+import { restoreTask } from "../services/task.service.js";
 
 const createTask = asyncHandler(async (req, res) => {
   const boardId = req.board._id;
@@ -11,7 +12,7 @@ const createTask = asyncHandler(async (req, res) => {
 
   if (!assignedTo) throw new ApiError(400, "Assign task to at least 1 user!");
   const date = new Date(dueDate);
-  
+
   //O(logn) (or even O(1)) operation if index and query design are correct
   const lastTask = await Task.findOne({ boardId, listId: list._id })
     .sort("-position")
@@ -40,7 +41,7 @@ const createTask = asyncHandler(async (req, res) => {
 const getAllTasks = asyncHandler(async (req, res) => {
   const listId = req.list._id;
 
-  const tasks = await Task.find({ listId }).sort("position");
+  const tasks = await Task.find({ listId, isDeleted: false }).sort("position");
 
   return res
     .status(200)
@@ -120,9 +121,12 @@ const moveTask = asyncHandler(async (req, res) => {
   task.position = destinationPosition;
   await task.save();
 
-  if(sourceListId !== destinationListId){
-    await List.updateOne({_id: sourceListId}, {$pull: {tasks: task._id}});
-    await List.updateOne({_id: destinationListId}, {$push: {tasks: task._id}});
+  if (sourceListId !== destinationListId) {
+    await List.updateOne({ _id: sourceListId }, { $pull: { tasks: task._id } });
+    await List.updateOne(
+      { _id: destinationListId },
+      { $push: { tasks: task._id } },
+    );
   }
 
   return res
@@ -133,15 +137,51 @@ const moveTask = asyncHandler(async (req, res) => {
 });
 
 const deleteTask = asyncHandler(async (req, res) => {
-  const list = req.list;
-  const taskId = req.task._id;
+  const task = req.task;
 
-  await Task.deleteOne({ _id: taskId });
-  await List.updateOne({ _id: list._id }, { $pull: { tasks: taskId } });
+  task.isDeleted = true;
+  task.deletedAt = new Date();
+  task.deletedBy = req.user._id;
+
+  await task.save({ validateBeforeSave: false });
+
+  await Task.updateMany(
+    {
+      listId: task.listId,
+      isDeleted: false,
+      position: { $gt: task.position },
+    },
+    { $inc: { position: -1 } },
+  );
 
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "Task deleted successfully!"));
+    .json(
+      new ApiResponse(
+        200,
+        { deletedTaskId: task._id },
+        "Task deleted successfully!",
+      ),
+    );
 });
 
-export { createTask, getAllTasks, updateTask, moveTask, deleteTask };
+const restoreDeletedTask = asyncHandler(async (req, res) => {
+  const deletedTask = req.deletedTask;
+
+  const restoredTaskId = await restoreTask(deletedTask);
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { restoredTaksId: restoredTaskId }, "Restored task successfully!"),
+    );
+});
+
+export {
+  createTask,
+  getAllTasks,
+  updateTask,
+  moveTask,
+  deleteTask,
+  restoreDeletedTask,
+};
