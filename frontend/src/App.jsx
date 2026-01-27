@@ -1,7 +1,11 @@
+import LoginSignupPage from "./pages/LoginSignupPage.jsx";
+
 function App() {
   return (
     <>
-      <h1 className="text-3xl font-light">Hello</h1>
+      <main>
+        <LoginSignupPage />
+      </main>
     </>
   );
 }
