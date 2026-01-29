@@ -11,6 +11,7 @@ function LoginSignupPage() {
     const formData = new FormData(e.target);
     const email = formData.get("email");
     const password = formData.get("password");
+    
     login({email, password});
   };
 
