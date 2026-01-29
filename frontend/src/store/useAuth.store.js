@@ -7,9 +7,12 @@ const BASE_URL =
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
+  activeTab: "login",
   isCheckingAuth: true,
   isSigningUp: false,
   isLoggingIn: false,
+
+  setActiveTab : (tab) => set({activeTab: tab}),
 
   checkAuth: async () => {
     try {
