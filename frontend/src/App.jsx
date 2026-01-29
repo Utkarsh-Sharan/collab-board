@@ -1,8 +1,9 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import LoginSignupPage from "./pages/LoginSignupPage.jsx";
-import { useAuthStore } from "./store/useAuth.store.js";
+import WorkspacePage from "./pages/WorkspacePage.jsx";
 import PageLoader from "./components/PageLoader.jsx";
+import { useAuthStore } from "./store/useAuth.store.js";
 import { useEffect } from "react";
 
 function App() {
