@@ -3,12 +3,12 @@ import { body } from "express-validator";
 //authentication
 const userRegisterValidator = () => {
   return [
-    body("email")
+    body("fullName")
       .trim()
       .notEmpty()
-      .withMessage("Email is required!")
-      .isEmail()
-      .withMessage("Email is invalid!"),
+      .withMessage("Full name is required!")
+      .isLength({ min: 2, max: 15 })
+      .withMessage("Full name must be 2 to 15 characters long!"),
     body("userName")
       .trim()
       .notEmpty()
@@ -17,6 +17,12 @@ const userRegisterValidator = () => {
       .withMessage("User name must be at least 4 characters long!")
       .isLowercase()
       .withMessage("Use small letters for User name!"),
+    body("email")
+      .trim()
+      .notEmpty()
+      .withMessage("Email is required!")
+      .isEmail()
+      .withMessage("Email is invalid!"),
     body("password")
       .trim()
       .notEmpty()

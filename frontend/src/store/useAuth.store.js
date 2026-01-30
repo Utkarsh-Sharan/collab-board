@@ -36,13 +36,12 @@ export const useAuthStore = create((set, get) => ({
       set({ authUser: res.data.data.createdUser });
     } catch (error) {
       const backend = error.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
 
-      if (backend?.errors || backend.errors.length > 0) {
-        const firstError = Object.values(backend.errors[0])[0];
-        toast.error(firstError);
-      } else {
-        toast.error(backend?.message || "Something went wrong!");
-      }
+      toast.error(message);
     } finally {
       set({ isSigningUp: false });
     }
@@ -58,18 +57,12 @@ export const useAuthStore = create((set, get) => ({
       toast.success("Logged in successfully!");
     } catch (error) {
       const backend = error.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
 
-      if (backend?.errors || backend.errors.length > 0) {
-        const firstError = Object.values(backend.errors[0])[0];
-        toast.error(firstError);
-      } else {
-        const message =
-          backend?.message ||
-          (backend?.errors && Object.values(backend.errors)[0]) ||
-          "Something went wrong!";
-
-        toast.error(message);
-      }
+      toast.error(message);
     } finally {
       set({ isLoggingIn: false });
     }
