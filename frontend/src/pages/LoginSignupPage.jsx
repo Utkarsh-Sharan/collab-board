@@ -41,18 +41,18 @@ function LoginSignupPage() {
 
           <div className="flex items-center gap-10 mt-10">
             <button
-              className="text-lg font-semibold"
+              className={`text-lg font-semibold ${activeTab === "login" ? "border-b-4 border-orange-400" : "border-b-4 border-transparent"}`}
               id="login-btn"
               onClick={handleActiveTab}
             >
               Login
             </button>
             <button
-              className="text-lg font-semibold"
+              className={`text-lg font-semibold ${activeTab === "signup" ? "border-b-4 border-orange-400" : "border-b-4 border-transparent"}`}
               id="signup-btn"
               onClick={handleActiveTab}
             >
-              Sign Up
+              Signup
             </button>
           </div>
 
