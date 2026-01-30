@@ -4,7 +4,7 @@ import LoginForm from "../components/LoginForm.jsx";
 import SignupForm from "../components/SignupForm.jsx";
 
 function LoginSignupPage() {
-  const { login, activeTab, setActiveTab } = useAuthStore();
+  const { login, activeTab, setActiveTab, signup } = useAuthStore();
 
   const handleActiveTab = (e) => {
     const clickedBtn = e.target.id;
@@ -24,6 +24,8 @@ function LoginSignupPage() {
     } else {
       const fullName = formData.get("fullName");
       const userName = formData.get("userName");
+
+      signup({ email, password, fullName, userName });
     }
   };
 

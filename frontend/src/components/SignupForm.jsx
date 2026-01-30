@@ -1,3 +1,4 @@
+import { LoaderIcon } from "react-hot-toast";
 import { useAuthStore } from "../store/useAuth.store.js";
 
 function SignupForm() {

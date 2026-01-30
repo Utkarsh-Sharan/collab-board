@@ -12,7 +12,7 @@ export const useAuthStore = create((set, get) => ({
   isSigningUp: false,
   isLoggingIn: false,
 
-  setActiveTab : (tab) => set({activeTab: tab}),
+  setActiveTab: (tab) => set({ activeTab: tab }),
 
   checkAuth: async () => {
     try {
@@ -27,13 +27,34 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  signup: async (data) => {
+    set({ isSigningUp: true });
+
+    try {
+      const res = await axiosInstance.post("/auth/register", data);
+
+      set({ authUser: res.data.data.createdUser });
+    } catch (error) {
+      const backend = error.response?.data;
+
+      if (backend?.errors || backend.errors.length > 0) {
+        const firstError = Object.values(backend.errors[0])[0];
+        toast.error(firstError);
+      } else {
+        toast.error(backend?.message || "Something went wrong!");
+      }
+    } finally {
+      set({ isSigningUp: false });
+    }
+  },
+
   login: async (data) => {
     set({ isLoggingIn: true });
 
     try {
       const res = await axiosInstance.post("/auth/login", data);
 
-      set({ authUser: res.data.data });
+      set({ authUser: res.data.data.user });
       toast.success("Logged in successfully!");
     } catch (error) {
       const backend = error.response?.data;
@@ -42,7 +63,12 @@ export const useAuthStore = create((set, get) => ({
         const firstError = Object.values(backend.errors[0])[0];
         toast.error(firstError);
       } else {
-        toast.error(backend.message || "Something went wrong!");
+        const message =
+          backend?.message ||
+          (backend?.errors && Object.values(backend.errors)[0]) ||
+          "Something went wrong!";
+
+        toast.error(message);
       }
     } finally {
       set({ isLoggingIn: false });
