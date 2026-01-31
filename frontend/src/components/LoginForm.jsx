@@ -30,10 +30,10 @@ function LoginForm() {
           name="email"
         />
 
-        <div className="flex justify-between items-center">
-          <h4 className="font-light mt-4 text-sm">Password</h4>
+        <div className="mt-4 flex justify-between items-center">
+          <h4 className="font-light text-sm">Password</h4>
           <a
-            className="text-sm font-light mt-2 text-teal-500 cursor-pointer"
+            className="text-sm font-light text-teal-500 cursor-pointer"
             onClick={handleActiveForm}
           >
             Forgot password?

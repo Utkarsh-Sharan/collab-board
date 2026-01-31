@@ -1,7 +1,14 @@
+import { LoaderIcon } from "react-hot-toast";
 import { useAuthStore } from "../store/useAuth.store.js";
+import { Check } from "lucide-react";
 
 function ResetPasswordForm() {
-  const { setActiveForm, forgotPassword } = useAuthStore();
+  const {
+    setActiveForm,
+    forgotPassword,
+    isResettingPassword,
+    isResetPasswordMailSent,
+  } = useAuthStore();
 
   const handleActiveForm = () => {
     setActiveForm("login/signup");
@@ -43,12 +50,26 @@ function ResetPasswordForm() {
             name="email"
           />
 
-          <button
-            type="submit"
-            className="mt-10 bg-orange-400 w-full rounded-md py-3 text-lg font-semibold text-center"
-          >
-            Receive Email
-          </button>
+          <div>
+            {isResetPasswordMailSent ? (
+              <div className="mt-10 flex justify-center items-center gap-1">
+                <Check className="text-md text-teal-500" />
+                <p className="text-md text-teal-500">Email sent successfully</p>
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="mt-10 bg-orange-400 w-full rounded-md py-3 text-lg font-semibold flex justify-center"
+                disabled={isResettingPassword}
+              >
+                {isResettingPassword ? (
+                  <LoaderIcon className="w-full h-5 animate-spin" />
+                ) : (
+                  "Receive Email"
+                )}
+              </button>
+            )}
+          </div>
         </div>
       </form>
     </>

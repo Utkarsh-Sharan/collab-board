@@ -13,6 +13,7 @@ export const useAuthStore = create((set, get) => ({
   isSigningUp: false,
   isLoggingIn: false,
   isResettingPassword: false,
+  isResetPasswordMailSent: false,
 
   setActiveForm: (form) => set({ activeForm: form }),
 
@@ -66,7 +67,6 @@ export const useAuthStore = create((set, get) => ({
         backend?.message ||
         "Something went wrong!";
 
-      console.log(backend);
       toast.error(message);
     } finally {
       set({ isLoggingIn: false });
@@ -77,9 +77,9 @@ export const useAuthStore = create((set, get) => ({
     set({ isResettingPassword: true });
 
     try {
-      await axiosInstance.post("/auth/forgot-password");
+      await axiosInstance.post("/auth/forgot-password", data);
 
-      toast.success("Email sent successfully!");
+      set({ isResetPasswordMailSent: true });
     } catch (error) {
       const backend = error.response?.data;
       const message =
@@ -87,8 +87,9 @@ export const useAuthStore = create((set, get) => ({
         backend?.message ||
         "Something went wrong!";
 
-      console.log(backend);
       toast.error(message);
+    } finally {
+      set({ isResettingPassword: false });
     }
   },
 
