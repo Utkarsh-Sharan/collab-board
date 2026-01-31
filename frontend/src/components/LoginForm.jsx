@@ -2,7 +2,11 @@ import { LoaderIcon } from "react-hot-toast";
 import { useAuthStore } from "../store/useAuth.store.js";
 
 function LoginForm() {
-  const { isLoggingIn, setActiveTab } = useAuthStore();
+  const { isLoggingIn, setActiveTab, setActiveForm } = useAuthStore();
+
+  const handleActiveForm = () => {
+    setActiveForm("resetPassword");
+  }
 
   const handleActiveTab = () => {
     setActiveTab("signup");
@@ -18,7 +22,7 @@ function LoginForm() {
       </div>
 
       <div className="mt-10">
-        <h4 className="text-lg font-light">Email</h4>
+        <h4 className="text-sm font-light">Email</h4>
         <input
           type="text"
           placeholder="john.doe@example.com"
@@ -26,7 +30,15 @@ function LoginForm() {
           name="email"
         />
 
-        <h4 className="text-lg font-light mt-2">Password</h4>
+        <div className="flex justify-between items-center">
+          <h4 className="font-light mt-4 text-sm">Password</h4>
+          <a
+            className="text-sm font-light mt-2 text-teal-500 cursor-pointer"
+            onClick={handleActiveForm}
+          >
+            Forgot password?
+          </a>
+        </div>
         <input
           type="password"
           placeholder="Enter your password"
@@ -36,11 +48,11 @@ function LoginForm() {
 
         <button
           type="submit"
-          className="mt-10 bg-orange-400 w-full rounded-md py-3 text-lg font-semibold"
+          className="mt-10 bg-orange-400 w-full rounded-md py-3 text-lg font-semibold flex justify-center"
           disabled={isLoggingIn}
         >
           {isLoggingIn ? (
-            <LoaderIcon className="w-full h-5 animate-spin text-center" />
+            <LoaderIcon className="w-full h-5 animate-spin" />
           ) : (
             "Login"
           )}

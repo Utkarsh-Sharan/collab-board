@@ -7,10 +7,14 @@ const BASE_URL =
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
+  activeForm: "login/signup",
   activeTab: "login",
   isCheckingAuth: true,
   isSigningUp: false,
   isLoggingIn: false,
+  isResettingPassword: false,
+
+  setActiveForm: (form) => set({ activeForm: form }),
 
   setActiveTab: (tab) => set({ activeTab: tab }),
 
@@ -62,15 +66,35 @@ export const useAuthStore = create((set, get) => ({
         backend?.message ||
         "Something went wrong!";
 
+      console.log(backend);
       toast.error(message);
     } finally {
       set({ isLoggingIn: false });
     }
   },
 
+  forgotPassword: async (data) => {
+    set({ isResettingPassword: true });
+
+    try {
+      await axiosInstance.post("/auth/forgot-password");
+
+      toast.success("Email sent successfully!");
+    } catch (error) {
+      const backend = error.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
+
+      console.log(backend);
+      toast.error(message);
+    }
+  },
+
   logout: async () => {
     try {
-      await axiosInstance.post("auth/logout");
+      await axiosInstance.post("/auth/logout");
 
       set({ authUser: null });
       toast.success("Logged out successfully!");

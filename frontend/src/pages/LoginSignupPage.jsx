@@ -2,9 +2,10 @@ import icon from "../assets/collab-board-icon.png";
 import { useAuthStore } from "../store/useAuth.store.js";
 import LoginForm from "../components/LoginForm.jsx";
 import SignupForm from "../components/SignupForm.jsx";
+import ResetPasswordForm from "../components/ResetPasswordForm.jsx";
 
 function LoginSignupPage() {
-  const { login, activeTab, setActiveTab, signup } = useAuthStore();
+  const { login, activeForm, activeTab, setActiveTab, signup } = useAuthStore();
 
   const handleActiveTab = (e) => {
     const clickedBtn = e.target.id;
@@ -39,28 +40,34 @@ function LoginSignupPage() {
             <h3 className="text-xl font-semibold">CollabBoard</h3>
           </div>
 
-          <div className="flex items-center gap-10 mt-10">
-            <button
-              className={`text-lg font-semibold ${activeTab === "login" ? "border-b-4 border-orange-400" : "border-b-4 border-transparent"}`}
-              id="login-btn"
-              onClick={handleActiveTab}
-            >
-              Login
-            </button>
-            <button
-              className={`text-lg font-semibold ${activeTab === "signup" ? "border-b-4 border-orange-400" : "border-b-4 border-transparent"}`}
-              id="signup-btn"
-              onClick={handleActiveTab}
-            >
-              Signup
-            </button>
-          </div>
+          {activeForm === "login/signup" ? (
+            <>
+              <div className="flex items-center gap-10 mt-10">
+                <button
+                  className={`text-lg font-semibold ${activeTab === "login" ? "border-b-4 border-orange-400" : "border-b-4 border-transparent"}`}
+                  id="login-btn"
+                  onClick={handleActiveTab}
+                >
+                  Login
+                </button>
+                <button
+                  className={`text-lg font-semibold ${activeTab === "signup" ? "border-b-4 border-orange-400" : "border-b-4 border-transparent"}`}
+                  id="signup-btn"
+                  onClick={handleActiveTab}
+                >
+                  Signup
+                </button>
+              </div>
 
-          <hr />
+              <hr />
 
-          <form onSubmit={handleSubmit}>
-            {activeTab === "login" ? <LoginForm /> : <SignupForm />}
-          </form>
+              <form onSubmit={handleSubmit}>
+                {activeTab === "login" ? <LoginForm /> : <SignupForm />}
+              </form>
+            </>
+          ) : (
+            <ResetPasswordForm />
+          )}
         </div>
       </section>
     </>

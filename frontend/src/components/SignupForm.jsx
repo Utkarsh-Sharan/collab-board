@@ -18,7 +18,7 @@ function SignupForm() {
       </div>
 
       <div className="mt-10">
-        <h4 className="text-lg font-light">Full Name</h4>
+        <h4 className="text-sm font-light">Full Name</h4>
         <input
           type="text"
           placeholder="John Doe"
@@ -26,7 +26,7 @@ function SignupForm() {
           name="fullName"
         />
 
-        <h4 className="text-lg font-light">User Name</h4>
+        <h4 className="text-sm font-light mt-4">User Name</h4>
         <input
           type="text"
           placeholder="john-doe"
@@ -34,7 +34,7 @@ function SignupForm() {
           name="userName"
         />
 
-        <h4 className="text-lg font-light">Email</h4>
+        <h4 className="text-sm font-light mt-4">Email</h4>
         <input
           type="text"
           placeholder="john.doe@example.com"
@@ -42,7 +42,7 @@ function SignupForm() {
           name="email"
         />
 
-        <h4 className="text-lg font-light mt-2">Password</h4>
+        <h4 className="text-sm font-light mt-4">Password</h4>
         <input
           type="password"
           placeholder="Create a password"
