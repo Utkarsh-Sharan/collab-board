@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import LoginSignupPage from "./pages/LoginSignupPage.jsx";
 import WorkspacePage from "./pages/WorkspacePage.jsx";
+import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
 import PageLoader from "./components/PageLoader.jsx";
 import { useAuthStore } from "./store/useAuth.store.js";
 import { useEffect } from "react";
@@ -29,6 +30,8 @@ function App() {
             !authUser ? <LoginSignupPage /> : <Navigate to={"/workspace"} />
           }
         />
+        <Route path="/reset-password/:resetToken"
+          element={<ResetPasswordPage />}/>
       </Routes>
 
       <Toaster />

@@ -32,9 +32,9 @@ function LoginSignupPage() {
 
   return (
     <>
-      <section className="h-screen light-background flex items-center justify-center">
+      <main className="h-screen light-background flex items-center justify-center">
         {/* Left Half */}
-        <div className="flex-col items-center w-11/12 md:max-w-xl gap-2 border-2 border-orange-200 rounded-2xl px-10 py-20">
+        <section className="flex-col items-center w-11/12 md:max-w-xl gap-2 border-2 border-orange-200 rounded-2xl px-10 py-20">
           <div className="flex items-center gap-2">
             <img src={icon} alt="app-image" className="w-6" />
             <h3 className="text-xl font-semibold">CollabBoard</h3>
@@ -68,8 +68,8 @@ function LoginSignupPage() {
           ) : (
             <ResetPasswordForm />
           )}
-        </div>
-      </section>
+        </section>
+      </main>
     </>
   );
 }

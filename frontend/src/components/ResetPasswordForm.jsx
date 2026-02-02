@@ -5,8 +5,8 @@ import { Check } from "lucide-react";
 function ResetPasswordForm() {
   const {
     setActiveForm,
-    forgotPassword,
-    isResettingPassword,
+    requestPasswordReset,
+    isRequestingPasswordReset,
     isResetPasswordMailSent,
   } = useAuthStore();
 
@@ -20,7 +20,7 @@ function ResetPasswordForm() {
     const formData = new FormData(e.target);
     const email = formData.get("email");
 
-    forgotPassword({ email });
+    requestPasswordReset({ email });
   };
 
   return (
@@ -50,19 +50,19 @@ function ResetPasswordForm() {
             name="email"
           />
 
-          <div>
+          <div className="mt-10">
             {isResetPasswordMailSent ? (
-              <div className="mt-10 flex justify-center items-center gap-1">
+              <div className="flex justify-center items-center gap-1">
                 <Check className="text-md text-teal-500" />
                 <p className="text-md text-teal-500">Email sent successfully</p>
               </div>
             ) : (
               <button
                 type="submit"
-                className="mt-10 bg-orange-400 w-full rounded-md py-3 text-lg font-semibold flex justify-center"
-                disabled={isResettingPassword}
+                className="bg-orange-400 w-full rounded-md py-3 text-lg font-semibold flex justify-center"
+                disabled={isRequestingPasswordReset}
               >
-                {isResettingPassword ? (
+                {isRequestingPasswordReset ? (
                   <LoaderIcon className="w-full h-5 animate-spin" />
                 ) : (
                   "Receive Email"
