@@ -26,9 +26,26 @@ export const useAuthStore = create((set, get) => ({
       const res = await axiosInstance.get("/auth/current-user");
       set({ authUser: res.data.data });
     } catch (error) {
-      console.log("Error in auth checking!", error);
+      const status = error.response?.status;
 
-      set({ authUser: null });
+      if (status === 401) {
+        try {
+          const refreshTokenRes = await axiosInstance.post(
+            "/auth/refresh-access-token",
+          );
+
+          const res = await axiosInstance.post("/auth/current-user");
+          set({ authUser: res.data.data });
+        } catch (error) {
+          console.log("Refresh token failed!", error);
+
+          set({ authUser: null });
+        }
+      } else {
+        console.log("Error in auth checking!", error);
+
+        set({ authUser: null });
+      }
     } finally {
       set({ isCheckingAuth: false });
     }

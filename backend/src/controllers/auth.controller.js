@@ -8,6 +8,7 @@ import {
 } from "../utils/emailService.js";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import ms from "ms";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -91,13 +92,20 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
   };
 
   return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, {
+      ...options,
+      maxAge: ms(process.env.ACCESS_TOKEN_EXPIRY),
+    })
+    .cookie("refreshToken", refreshToken, {
+      ...options,
+      maxAge: ms(process.env.REFRESH_TOKEN_EXPIRY),
+    })
     .json(
       new ApiResponse(
         200,
@@ -216,7 +224,8 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+  const incomingRefreshToken =
+    req.cookies.refreshToken;
   if (!incomingRefreshToken) throw new ApiError(401, "Unauthorized access!");
 
   const decodedToken = jwt.verify(
@@ -231,7 +240,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
   };
 
   const { accessToken, refreshToken: newRefreshToken } =
@@ -242,8 +252,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", newRefreshToken, options)
+    .cookie("accessToken", accessToken, {
+      ...options,
+      maxAge: ms(process.env.ACCESS_TOKEN_EXPIRY),
+    })
+    .cookie("refreshToken", newRefreshToken, {
+      ...options,
+      maxAge: ms(process.env.REFRESH_TOKEN_EXPIRY),
+    })
     .json(
       new ApiResponse(
         200,
