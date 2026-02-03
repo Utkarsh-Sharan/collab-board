@@ -1,4 +1,4 @@
-import { LoaderIcon } from "react-hot-toast";
+import { LoaderIcon } from "lucide-react";
 import { useAuthStore } from "../store/useAuth.store.js";
 import { Check } from "lucide-react";
 
@@ -32,7 +32,7 @@ function ResetPasswordForm() {
         {"<- Back to login"}
       </button>
 
-      <div className="mt-3">
+      <div className="mt-4">
         <h1 className="text-3xl">Forgot your password?</h1>
         <p className="text-orange-400 text-lg">
           Please enter your email. You will receive an email to reset your

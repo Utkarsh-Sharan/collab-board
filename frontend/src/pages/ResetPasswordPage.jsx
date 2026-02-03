@@ -1,4 +1,4 @@
-import { LoaderIcon } from "react-hot-toast";
+import { LoaderIcon } from "lucide-react";
 import icon from "../assets/collab-board-icon.png";
 import { useAuthStore } from "../store/useAuth.store.js";
 import { useParams, useNavigate } from "react-router-dom";

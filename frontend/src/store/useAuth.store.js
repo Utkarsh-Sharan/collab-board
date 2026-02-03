@@ -30,7 +30,7 @@ export const useAuthStore = create((set, get) => ({
 
       if (status === 401) {
         try {
-          const refreshTokenRes = await axiosInstance.post(
+          await axiosInstance.post(
             "/auth/refresh-access-token",
           );
 
