@@ -1,16 +1,9 @@
-import { useAuthStore } from "../store/useAuth.store.js";
+import SideBar from "../components/SideBar.jsx";
 
 function WorkspacePage() {
-  const { logout } = useAuthStore();
-
   return (
     <>
-      <button
-        className="mt-10 bg-orange-400 w-full rounded-md py-3 text-lg font-semibold"
-        onClick={logout}
-      >
-        Logout
-      </button>
+      <SideBar />
     </>
   );
 }
