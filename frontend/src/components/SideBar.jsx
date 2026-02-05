@@ -1,9 +1,11 @@
 import { ClipboardList, ListChecks, Settings, Star } from "lucide-react";
 import icon from "../assets/collab-board-icon.png";
 import { useAuthStore } from "../store/useAuth.store.js";
+import { useWorkspaceStore } from "../store/useWorkspace.store.js";
 
 function SideBar() {
   const { authUser, logout } = useAuthStore();
+  const { toggleUserSettings } = useWorkspaceStore();
 
   return (
     <>
@@ -46,7 +48,7 @@ function SideBar() {
                 </div>
               </div>
 
-              <button>
+              <button onClick={toggleUserSettings}>
                 <Settings />
               </button>
             </article>
