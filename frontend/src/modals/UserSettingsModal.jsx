@@ -1,10 +1,16 @@
+import ChangeCurrentPasswordForm from "../components/ChangeCurrentPasswordForm.jsx";
 import { useAuthStore } from "../store/useAuth.store.js";
 import { useWorkspaceStore } from "../store/useWorkspace.store.js";
 import { Settings, X } from "lucide-react";
 
 function UserSettingsModal() {
   const { authUser } = useAuthStore();
-  const { isUserSettingsVisible, toggleUserSettings } = useWorkspaceStore();
+  const {
+    isUserSettingsVisible,
+    toggleUserSettings,
+    isChangingPassword,
+    togglePasswordChangingWindow,
+  } = useWorkspaceStore();
 
   if (!isUserSettingsVisible) return null;
 
@@ -29,6 +35,8 @@ function UserSettingsModal() {
           <Settings className="w-10" />
           <h2 className="font-bold text-2xl">Settings</h2>
         </div>
+
+        {/* User Details */}
         <div className="flex flex-col sm:flex-row gap-5 items-center justify-start mt-5">
           <img
             src={authUser.avatar.url}
@@ -55,10 +63,18 @@ function UserSettingsModal() {
           </div>
         </div>
 
+        {/* Change Password Form */}
+        {isChangingPassword && <ChangeCurrentPasswordForm />}
+
         <div>
-          <button className="mt-10 bg-orange-400 w-full rounded-md py-2">
-            Change Password
-          </button>
+          {!isChangingPassword && (
+            <button
+              className="mt-10 bg-orange-400 w-full rounded-md py-2"
+              onClick={togglePasswordChangingWindow}
+            >
+              Change Password
+            </button>
+          )}
           <button className="mt-5 bg-red-400 text-white w-full rounded-md py-2">
             Delete Account
           </button>

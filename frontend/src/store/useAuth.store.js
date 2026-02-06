@@ -16,6 +16,7 @@ export const useAuthStore = create((set, get) => ({
   isResetPasswordMailSent: false,
   isResettingPassword: false,
   isPasswordReset: false,
+  isChangingCurrentPassword: false,
 
   setActiveForm: (form) => set({ activeForm: form }),
 
@@ -134,6 +135,10 @@ export const useAuthStore = create((set, get) => ({
     } finally {
       set({ isResettingPassword: false });
     }
+  },
+
+  changeCurrentPassword: async (data) => {
+    
   },
 
   logout: async () => {
