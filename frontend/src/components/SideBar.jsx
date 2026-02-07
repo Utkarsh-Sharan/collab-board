@@ -43,13 +43,13 @@ function SideBar() {
                 />
 
                 <div className="flex flex-col items-start justify-center">
-                  <h6 className="">{authUser.fullName}</h6>
+                  <h6>{authUser.fullName}</h6>
                   <p>{authUser.userName}</p>
                 </div>
               </div>
 
               <button onClick={toggleUserSettings}>
-                <Settings />
+                <Settings className="hover:bg-teal-200 hover:text-white rounded-md" />
               </button>
             </article>
 

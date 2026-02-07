@@ -1,8 +1,20 @@
-import { X } from "lucide-react";
+import { Loader, X } from "lucide-react";
 import { useWorkspaceStore } from "../store/useWorkspace.store.js";
+import { useAuthStore } from "../store/useAuth.store.js";
 
 function ChangeCurrentPasswordForm() {
+  const { isChangingCurrentPassword, changeCurrentPassword } = useAuthStore();
   const { togglePasswordChangingWindow } = useWorkspaceStore();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const oldPassword = formData.get("oldPassword");
+    const newPassword = formData.get("newPassword");
+
+    changeCurrentPassword({ oldPassword, newPassword });
+  };
 
   return (
     <div className="mt-10 p-2 relative flex flex-col items-center justify-center border border-orange-200 rounded-md">
@@ -16,7 +28,7 @@ function ChangeCurrentPasswordForm() {
           <X />
         </button>
 
-        <form className="w-full">
+        <form className="w-full" onSubmit={handleSubmit}>
           <h4 className="text-sm font-light">Old Password</h4>
           <input
             type="text"
@@ -32,8 +44,16 @@ function ChangeCurrentPasswordForm() {
             name="newPassword"
           />
 
-          <button className="mt-10 bg-orange-400 w-full rounded-md py-2">
-            Set New Password
+          <button
+            className="mt-10 bg-orange-400 w-full rounded-md py-2 flex items-center justify-center"
+            type="submit"
+            disabled={isChangingCurrentPassword}
+          >
+            {isChangingCurrentPassword ? (
+              <Loader className="animate-spin" />
+            ) : (
+              "Set New Password"
+            )}
           </button>
         </form>
       </div>
