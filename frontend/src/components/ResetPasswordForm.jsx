@@ -1,8 +1,10 @@
 import { LoaderIcon } from "lucide-react";
 import { useAuthStore } from "../store/useAuth.store.js";
 import { Check } from "lucide-react";
+import { useState } from "react";
 
 function ResetPasswordForm() {
+  const [formData, setFormData] = useState({ email: "" });
   const {
     setActiveForm,
     requestPasswordReset,
@@ -14,13 +16,12 @@ function ResetPasswordForm() {
     setActiveForm("login/signup");
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleChange = (e) => {
+    setFormData((prev) => ({...prev, [e.target.name]: e.target.value}))
+  }
 
-    const formData = new FormData(e.target);
-    const email = formData.get("email");
-
-    requestPasswordReset({ email });
+  const handleSubmit = () => {
+    requestPasswordReset(formData);
   };
 
   return (
@@ -40,7 +41,7 @@ function ResetPasswordForm() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit}>
+      <form>
         <div className="mt-10">
           <h4 className="text-sm font-light">Email</h4>
           <input
@@ -48,6 +49,8 @@ function ResetPasswordForm() {
             placeholder="john.doe@example.com"
             className="w-full px-5 py-2 border border-orange-100 rounded-md"
             name="email"
+            value={formData.email}
+            onChange={handleChange}
           />
 
           <div className="mt-10">
@@ -58,9 +61,9 @@ function ResetPasswordForm() {
               </div>
             ) : (
               <button
-                type="submit"
                 className="bg-orange-400 w-full rounded-md py-3 text-lg font-semibold flex justify-center"
                 disabled={isRequestingPasswordReset}
+                onClick={handleSubmit}
               >
                 {isRequestingPasswordReset ? (
                   <LoaderIcon className="w-full h-5 animate-spin" />
