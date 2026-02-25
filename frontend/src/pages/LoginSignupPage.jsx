@@ -60,9 +60,7 @@ function LoginSignupPage() {
 
             <div className="border-b-2 border-orange-200"></div>
 
-            <form onSubmit={handleSubmit}>
-              {activeTab === "login" ? <LoginForm /> : <SignupForm />}
-            </form>
+            {activeTab === "login" ? <LoginForm /> : <SignupForm />}
           </>
         ) : (
           <ResetPasswordForm />
