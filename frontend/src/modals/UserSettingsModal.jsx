@@ -75,9 +75,11 @@ function UserSettingsModal() {
               Change Password
             </button>
           )}
-          <button className="mt-5 bg-red-400 text-white w-full rounded-md py-2">
+
+          {/* TODO: Add delete account functionality in auth controller */}
+          {/* <button className="mt-5 bg-red-400 text-white w-full rounded-md py-2">
             Delete Account
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
