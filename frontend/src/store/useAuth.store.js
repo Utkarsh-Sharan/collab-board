@@ -16,6 +16,7 @@ export const useAuthStore = create((set, get) => ({
   isResetPasswordMailSent: false,
   isResettingPassword: false,
   isPasswordReset: false,
+  isChangingCurrentPassword: false,
 
   setActiveForm: (form) => set({ activeForm: form }),
 
@@ -30,9 +31,7 @@ export const useAuthStore = create((set, get) => ({
 
       if (status === 401) {
         try {
-          await axiosInstance.post(
-            "/auth/refresh-access-token",
-          );
+          await axiosInstance.post("/auth/refresh-access-token");
 
           const res = await axiosInstance.post("/auth/current-user");
           set({ authUser: res.data.data });
@@ -133,6 +132,29 @@ export const useAuthStore = create((set, get) => ({
       toast.error(message);
     } finally {
       set({ isResettingPassword: false });
+    }
+  },
+
+  changeCurrentPassword: async (data) => {
+    set({ isChangingCurrentPassword: true });
+
+    try {
+      const res = await axiosInstance.post(
+        "/auth/change-current-password",
+        data,
+      );
+
+      toast.success(res.data.message);
+    } catch (error) {
+      const backend = error.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
+
+      toast.error(message);
+    } finally {
+      set({ isChangingCurrentPassword: false });
     }
   },
 
