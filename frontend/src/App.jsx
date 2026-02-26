@@ -17,7 +17,7 @@ function App() {
   if (isCheckingAuth) return <PageLoader />;
 
   return (
-    <main className="h-screen light-background flex items-center justify-center">
+    <main className="h-screen light-background">
       <Routes>
         <Route path="/" element={<Navigate to="/workspace" />} />
         <Route

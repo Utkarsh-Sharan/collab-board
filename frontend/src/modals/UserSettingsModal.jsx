@@ -1,4 +1,4 @@
-import ChangeCurrentPasswordForm from "../components/ChangeCurrentPasswordForm.jsx";
+import ChangeCurrentPasswordForm from "../components/forms/ChangeCurrentPasswordForm.jsx";
 import { useAuthStore } from "../store/useAuth.store.js";
 import { useWorkspaceStore } from "../store/useWorkspace.store.js";
 import { Settings, X } from "lucide-react";
