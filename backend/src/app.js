@@ -38,9 +38,9 @@ import boardRouter from "./routes/board.route.js";
 import listRouter from "./routes/list.route.js";
 import taskrouter from "./routes/task.route.js";
 
-app.use("/api/auth", authRouter);
-app.use("/api/users", userRouter);
-app.use("/api/boards", boardRouter, listRouter, taskrouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/boards", boardRouter, listRouter, taskrouter);
 
 //Global error handler
 app.use((err, req, res, next) => {

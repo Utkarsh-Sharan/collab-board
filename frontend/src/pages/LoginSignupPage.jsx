@@ -5,29 +5,12 @@ import SignupForm from "../components/SignupForm.jsx";
 import ResetPasswordForm from "../components/ResetPasswordForm.jsx";
 
 function LoginSignupPage() {
-  const { login, activeForm, activeTab, setActiveTab, signup } = useAuthStore();
+  const { activeForm, activeTab, setActiveTab } = useAuthStore();
 
   const handleActiveTab = (e) => {
     const clickedBtn = e.target.id;
 
     clickedBtn === "login-btn" ? setActiveTab("login") : setActiveTab("signup");
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.target);
-    const email = formData.get("email");
-    const password = formData.get("password");
-
-    if (activeTab === "login") {
-      login({ email, password });
-    } else {
-      const fullName = formData.get("fullName");
-      const userName = formData.get("userName");
-
-      signup({ email, password, fullName, userName });
-    }
   };
 
   return (
@@ -60,9 +43,7 @@ function LoginSignupPage() {
 
             <div className="border-b-2 border-orange-200"></div>
 
-            <form onSubmit={handleSubmit}>
-              {activeTab === "login" ? <LoginForm /> : <SignupForm />}
-            </form>
+            {activeTab === "login" ? <LoginForm /> : <SignupForm />}
           </>
         ) : (
           <ResetPasswordForm />
