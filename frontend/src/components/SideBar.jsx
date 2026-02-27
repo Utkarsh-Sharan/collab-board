@@ -1,4 +1,4 @@
-import { ClipboardList, ListChecks, Menu, Settings, Star } from "lucide-react";
+import { ClipboardList, ListChecks, Menu, Settings, Star, Trash2 } from "lucide-react";
 import icon from "../assets/collab-board-icon.png";
 import { useAuthStore } from "../store/useAuth.store.js";
 import { useWorkspaceStore } from "../store/useWorkspace.store.js";
@@ -32,6 +32,10 @@ function SideBar() {
               <button className="transition-colors duration-200 hover:bg-teal-200 hover:text-teal-800 rounded-md w-full p-2 flex gap-2">
                 <Star />
                 Starred
+              </button>
+              <button className="transition-colors duration-200 hover:bg-teal-200 hover:text-teal-800 rounded-md w-full p-2 flex gap-2">
+                <Trash2 />
+                Deleted
               </button>
             </div>
           </div>
@@ -92,6 +96,10 @@ function SideBar() {
                 <button className="bg-teal-400 rounded-md w-full p-2 flex justify-center gap-2">
                   <Star />
                   Starred
+                </button>
+                <button className="bg-teal-400 rounded-md w-full p-2 flex justify-center gap-2">
+                  <Trash2 />
+                  Deleted
                 </button>
               </div>
 
