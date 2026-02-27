@@ -1,5 +1,3 @@
-import { Search } from "lucide-react";
-
 function Header() {
   return (
     <nav className="border-b-2 h-20 flex justify-center items-center">

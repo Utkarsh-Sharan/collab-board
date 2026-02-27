@@ -3,7 +3,7 @@ import Header from "./Header.jsx";
 
 function Workspace() {
   return (
-    <section className="w-full pt-20 md:pt-0">
+    <section className="w-full pt-20 md:pt-0 overflow-y-auto">
       <Header />
       <section className="px-6 py-7">
         <header className="mb-10">

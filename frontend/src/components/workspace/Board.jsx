@@ -25,6 +25,17 @@ function Board() {
         </article>
 
         <BoardCard />
+        <BoardCard />
+        <BoardCard />
+        <BoardCard />
+        <BoardCard />
+        <BoardCard />
+        <BoardCard />
+        <BoardCard />
+        <BoardCard />
+        <BoardCard />
+        <BoardCard />
+        <BoardCard />
       </section>
     </>
   );

@@ -16,8 +16,8 @@ function SideBar() {
         <div className="h-full w-full flex flex-col items-center justify-between">
           <div className="w-full px-3 flex flex-col gap-10">
             <div className="flex items-center gap-2">
-              <img src={icon} alt="app-image" className="w-12 rounded-md" />
-              <h3 className="text-2xl font-semibold">CollabBoard</h3>
+              <img src={icon} alt="app-image" className="w-10 lg:w-12 rounded-md" />
+              <h3 className="text-xl lg:text-2xl font-semibold">CollabBoard</h3>
             </div>
 
             <div className="flex flex-col items-center justify-center gap-3">

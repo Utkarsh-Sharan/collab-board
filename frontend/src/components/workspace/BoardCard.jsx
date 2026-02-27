@@ -3,7 +3,7 @@ import { ClipboardList, Star } from "lucide-react";
 function BoardCard() {
   return (
     <article className="flex flex-col justify-between items-start gap-5 border border-orange-200 rounded-2xl bg-white p-5">
-      <div>
+      <div className="w-full">
         <div className="w-full flex justify-between items-start mb-5">
           <ClipboardList size={55} />
           <Star />
