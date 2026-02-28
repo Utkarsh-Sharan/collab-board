@@ -12,7 +12,7 @@ function BoardCard({title, desc}) {
         <h5 className="font-medium text-2xl">{title}</h5>
 
         <p className="line-clamp-2 text-gray-400">
-          {desc}
+          {desc ? desc : "No description..."}
         </p>
       </div>
 
