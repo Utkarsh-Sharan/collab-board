@@ -1,6 +1,6 @@
 import { ClipboardList, Star } from "lucide-react";
 
-function BoardCard() {
+function BoardCard({title, desc}) {
   return (
     <article className="flex flex-col justify-between items-start gap-5 border border-orange-200 rounded-2xl bg-white p-5">
       <div className="w-full">
@@ -9,10 +9,10 @@ function BoardCard() {
           <Star />
         </div>
 
-        <h5 className="font-medium text-2xl">Product Launch Q4</h5>
+        <h5 className="font-medium text-2xl">{title}</h5>
 
-        <p className="text-gray-400">
-          Coordination for the upcoming major release...
+        <p className="line-clamp-2 text-gray-400">
+          {desc}
         </p>
       </div>
 
