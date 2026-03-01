@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { axiosInstance } from "../../lib/axios.js";
 import toast from "react-hot-toast";
 import { useWorkspaceStore } from "../../store/useWorkspace.store.js";
-import CreateNewBoardModal from "../../modals/CreateNewBoardModal.jsx";
 
 function Board() {
   const [boards, setBoards] = useState([]);
@@ -65,8 +64,6 @@ function Board() {
           })
         )}
       </section>
-
-      <CreateNewBoardModal />
     </>
   );
 }

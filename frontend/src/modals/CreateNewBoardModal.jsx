@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useWorkspaceStore } from "../store/useWorkspace.store";
-import { LoaderIcon } from "lucide-react";
+import { LoaderIcon, X } from "lucide-react";
 
 function CreateNewBoardModal() {
   const [newBoardFormData, setNewBoardFormData] = useState({
@@ -28,13 +28,19 @@ function CreateNewBoardModal() {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-5 items-center justify-start mt-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
         className="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm"
         onClick={toggleNewBoardCreationModal}
       />
 
       <div className="light-background relative z-10 rounded-xl shadow-lg p-6 w-11/12 md:max-w-md">
+        <button
+          className="absolute top-2 right-2 hover:bg-red-400 hover:text-white rounded-md"
+          onClick={toggleNewBoardCreationModal}
+        >
+          <X />
+        </button>
         <div className="mt-10">
           <h1 className="text-3xl">Create A Board</h1>
           <p className="text-orange-400 text-lg">
