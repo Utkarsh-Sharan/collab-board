@@ -25,6 +25,10 @@ function CreateNewBoardModal() {
 
   const handleSubmit = () => {
     createBoard(newBoardFormData);
+    setNewBoardFormData({
+      title: "",
+      description: "",
+    })
   };
 
   return (

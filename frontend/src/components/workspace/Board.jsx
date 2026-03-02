@@ -1,43 +1,27 @@
 import { Loader, Plus } from "lucide-react";
 import BoardCard from "./BoardCard.jsx";
-import { useEffect, useState } from "react";
-import { axiosInstance } from "../../lib/axios.js";
-import toast from "react-hot-toast";
 import { useWorkspaceStore } from "../../store/useWorkspace.store.js";
+import { useEffect } from "react";
 
 function Board() {
-  const [boards, setBoards] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const { toggleNewBoardCreationModal } = useWorkspaceStore();
+  const {
+    isLoading,
+    refreshBoards,
+    boards,
+    toggleNewBoardCreationModal,
+  } = useWorkspaceStore();
+
+  const getAllBoards = useWorkspaceStore((state) => state.getAllBoards);
 
   useEffect(() => {
-    const onLoadHandler = async () => {
-      setIsLoading(true);
-      try {
-        const res = await axiosInstance.get("/boards/");
-
-        setBoards(res.data.data.boards);
-      } catch (error) {
-        const backend = error.response?.data;
-        const message =
-          (backend?.errors && Object.values(backend.errors)[0]) ||
-          backend?.message ||
-          "Something went wrong!";
-
-        toast.error(message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    onLoadHandler();
-  }, []);
+    getAllBoards();
+  }, [refreshBoards, getAllBoards]);
 
   return (
     <>
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <article
-          className="flex flex-col justify-center items-center text-center gap-5 border border-dashed border-teal-400 rounded-2xl bg-white/60 py-14"
+          className="flex flex-col justify-center items-center text-center gap-5 border border-dashed border-teal-400 rounded-2xl bg-white/50 py-14 cursor-pointer hover:bg-white"
           onClick={toggleNewBoardCreationModal}
         >
           <div className="bg-orange-100 text-orange-400 w-16 h-16 rounded-full p-5">
@@ -53,7 +37,7 @@ function Board() {
         {isLoading ? (
           <Loader className="h-5 animate-spin" />
         ) : (
-          boards.map((board) => {
+          boards?.length && boards?.map((board) => {
             return (
               <BoardCard
                 key={board._id}

@@ -7,6 +7,8 @@ export const useWorkspaceStore = create((set, get) => ({
   isChangingPassword: false,
   isCreatingNewBoard: false,
   isLoading: false,
+  boards: [],
+  refreshBoards: false,
 
   toggleUserSettings: () => {
     const currentState = get().isUserSettingsVisible;
@@ -23,13 +25,13 @@ export const useWorkspaceStore = create((set, get) => ({
     set({ isCreatingNewBoard: !currentState });
   },
 
-  createBoard: async (data) => {
+  getAllBoards: async () => {
     set({isLoading: true});
 
     try {
-      const res = await axiosInstance.post("/boards/", data);
+      const res = await axiosInstance.get("/boards/");
 
-      console.log(res);
+      set({boards: res.data.data.boards});
     } catch (error) {
       const backend = error?.response?.data;
       const message =
@@ -40,7 +42,28 @@ export const useWorkspaceStore = create((set, get) => ({
       toast.error(message);
     } finally {
       set({isLoading: false});
-      set({ isCreatingNewBoard: false });
+    }
+  },
+
+  createBoard: async (data) => {
+    set({isLoading: true});
+
+    try {
+      const res = await axiosInstance.post("/boards/", data);
+
+      set({refreshBoards: !(get().refreshBoards)});
+
+      toast.success(res.data.message);
+    } catch (error) {
+      const backend = error?.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
+
+      toast.error(message);
+    } finally {
+      set({ isLoading: false,  isCreatingNewBoard: false });
     }
   }
 }));
