@@ -1,9 +1,11 @@
 import { Loader, Plus } from "lucide-react";
 import BoardCard from "./BoardCard.jsx";
 import { useWorkspaceStore } from "../../store/useWorkspace.store.js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function Board() {
+  const [activeDropdownBoardId, setActiveDropdownBoardId] = useState(null);
+
   const {
     isLoading,
     refreshBoards,
@@ -12,6 +14,10 @@ function Board() {
   } = useWorkspaceStore();
 
   const getAllBoards = useWorkspaceStore((state) => state.getAllBoards);
+
+  const handleDropdownToggle = (board) => {
+    setActiveDropdownBoardId((prev) => prev === board._id ? null : board._id)
+  }
 
   useEffect(() => {
     getAllBoards();
@@ -41,8 +47,9 @@ function Board() {
             return (
               <BoardCard
                 key={board._id}
-                title={board.title}
-                desc={board.description}
+                board={board}
+                isDropdownActive={activeDropdownBoardId === board._id}
+                onToggle={() => handleDropdownToggle(board)}
               />
             );
           })
