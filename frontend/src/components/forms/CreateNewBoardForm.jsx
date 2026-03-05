@@ -7,10 +7,7 @@ function CreateNewBoardForm() {
     title: "",
     description: "",
   });
-  const {
-      isLoading,
-      createBoard,
-    } = useWorkspaceStore();
+  const { isLoading, createBoard } = useWorkspaceStore();
 
   const handleChange = (e) => {
     setNewBoardFormData((prev) => ({
@@ -29,6 +26,13 @@ function CreateNewBoardForm() {
 
   return (
     <form>
+      <div className="mt-10">
+        <h1 className="text-3xl">Create A Board</h1>
+        <p className="text-orange-400 text-lg">
+          Create with clarity, collaborate with confidence.
+        </p>
+      </div>
+
       <div className="mt-10">
         <label htmlFor="title" className="text-sm font-light">
           Title

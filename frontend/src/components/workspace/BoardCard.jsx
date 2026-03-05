@@ -2,6 +2,7 @@ import { ChevronDown, ChevronUp, ClipboardList, Star } from "lucide-react";
 import TeamDropdown from "./team/TeamDropdown";
 
 function BoardCard({board, isDropdownActive, onToggle}) {
+
   return (
     <article className="flex flex-col justify-between items-start gap-5 border border-orange-200 rounded-2xl bg-white p-5">
       <div className="w-full">
@@ -19,7 +20,7 @@ function BoardCard({board, isDropdownActive, onToggle}) {
 
       <div className="relative w-full flex justify-between items-center border-t-2 pt-2">
         <button
-          className={`flex gap-2 rounded-md ${isDropdownActive && "bg-gray-200"} hover:bg-gray-200 px-1 py-1`}
+          className={`flex gap-2 rounded-md ${isDropdownActive && "bg-gray-200"} hover:bg-gray-200 p-1`}
           onClick={onToggle}
         >
           <span>Team</span>
@@ -27,7 +28,7 @@ function BoardCard({board, isDropdownActive, onToggle}) {
           {isDropdownActive ? <ChevronUp /> : <ChevronDown />}
         </button>
 
-        {isDropdownActive && <TeamDropdown members={board.members} />}
+        {isDropdownActive && <TeamDropdown board={board} />}
 
         <button className="rounded-md bg-teal-400 px-2 py-1 text-white">
           View Board

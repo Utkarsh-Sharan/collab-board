@@ -1,32 +1,31 @@
-import { useWorkspaceStore } from "../store/useWorkspace.store";
 import { X } from "lucide-react";
-import CreateNewBoardForm from "../components/forms/CreateNewBoardForm";
+import { useWorkspaceStore } from "../store/useWorkspace.store.js";
+import MemberInvitationForm from "../components/forms/MemberInvitationForm.jsx";
 
-function CreateNewBoardModal() {
-  const { isCreatingNewBoard, toggleNewBoardCreationModal } =
-    useWorkspaceStore();
-
-  if (!isCreatingNewBoard) return null;
+function InviteMemberModal() {
+  const { isInvitingMembers, toggleMemberInvitationModal } = useWorkspaceStore();
+  
+  if(!isInvitingMembers) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
         className="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm"
-        onClick={toggleNewBoardCreationModal}
+        onClick={toggleMemberInvitationModal}
       />
 
       <div className="light-background relative z-10 rounded-xl shadow-lg p-6 w-11/12 md:max-w-md">
         <button
           className="absolute top-2 right-2 hover:bg-red-400 hover:text-white rounded-md"
-          onClick={toggleNewBoardCreationModal}
+          onClick={toggleMemberInvitationModal}
         >
           <X />
         </button>
 
-        <CreateNewBoardForm />
+        <MemberInvitationForm />
       </div>
     </div>
   );
 }
 
-export default CreateNewBoardModal;
+export default InviteMemberModal;

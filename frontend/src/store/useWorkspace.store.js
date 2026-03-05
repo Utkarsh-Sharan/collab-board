@@ -7,8 +7,11 @@ export const useWorkspaceStore = create((set, get) => ({
   isChangingPassword: false,
   isCreatingNewBoard: false,
   isLoading: false,
+  isInvitingMembers: false,
   boards: [],
+  currentBoard: null,
   refreshBoards: false,
+  
 
   toggleUserSettings: () => {
     const currentState = get().isUserSettingsVisible;
@@ -25,13 +28,20 @@ export const useWorkspaceStore = create((set, get) => ({
     set({ isCreatingNewBoard: !currentState });
   },
 
+  toggleMemberInvitationModal: () => {
+    const currentState = get().isInvitingMembers;
+    set({ isInvitingMembers: !currentState });
+  },
+
+  setCurrentBoard: (board) => set({ currentBoard: board }),
+
   getAllBoards: async () => {
-    set({isLoading: true});
+    set({ isLoading: true });
 
     try {
       const res = await axiosInstance.get("/boards/");
 
-      set({boards: res.data.data.boards});
+      set({ boards: res.data.data.boards });
     } catch (error) {
       const backend = error?.response?.data;
       const message =
@@ -41,17 +51,17 @@ export const useWorkspaceStore = create((set, get) => ({
 
       toast.error(message);
     } finally {
-      set({isLoading: false});
+      set({ isLoading: false });
     }
   },
 
   createBoard: async (data) => {
-    set({isLoading: true});
+    set({ isLoading: true });
 
     try {
       const res = await axiosInstance.post("/boards/", data);
 
-      set({refreshBoards: !(get().refreshBoards)});
+      set({ refreshBoards: !get().refreshBoards });
 
       toast.success(res.data.message);
     } catch (error) {
@@ -63,7 +73,7 @@ export const useWorkspaceStore = create((set, get) => ({
 
       toast.error(message);
     } finally {
-      set({ isLoading: false,  isCreatingNewBoard: false });
+      set({ isLoading: false, isCreatingNewBoard: false });
     }
-  }
+  },
 }));
