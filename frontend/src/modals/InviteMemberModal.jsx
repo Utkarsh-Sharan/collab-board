@@ -1,11 +1,12 @@
 import { X } from "lucide-react";
 import { useWorkspaceStore } from "../store/useWorkspace.store.js";
-import MemberInvitationForm from "../components/forms/MemberInvitationForm.jsx";
+import MemberInvitationFormContainer from "../components/forms/MemberInvitationFormContainer.jsx";
 
 function InviteMemberModal() {
-  const { isInvitingMembers, toggleMemberInvitationModal } = useWorkspaceStore();
-  
-  if(!isInvitingMembers) return null;
+  const { isInvitingMembers, toggleMemberInvitationModal } =
+    useWorkspaceStore();
+
+  if (!isInvitingMembers) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -22,7 +23,7 @@ function InviteMemberModal() {
           <X />
         </button>
 
-        <MemberInvitationForm />
+        <MemberInvitationFormContainer />
       </div>
     </div>
   );

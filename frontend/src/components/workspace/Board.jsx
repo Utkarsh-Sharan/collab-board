@@ -10,12 +10,14 @@ function Board() {
     isLoading,
     refreshBoards,
     boards,
+    setCurrentBoard,
     toggleNewBoardCreationModal,
   } = useWorkspaceStore();
 
   const getAllBoards = useWorkspaceStore((state) => state.getAllBoards);
 
   const handleDropdownToggle = (board) => {
+    setCurrentBoard(board);
     setActiveDropdownBoardId((prev) => prev === board._id ? null : board._id)
   }
 

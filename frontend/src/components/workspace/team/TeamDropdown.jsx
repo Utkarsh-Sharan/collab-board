@@ -1,13 +1,8 @@
-import { useEffect } from "react";
 import { useWorkspaceStore } from "../../../store/useWorkspace.store.js";
 import TeamMember from "./TeamMember";
 
 function TeamDropdown({ board }) {
-  const { setCurrentBoard, toggleMemberInvitationModal } = useWorkspaceStore();
-
-  useEffect(() => {
-    setCurrentBoard(board);
-  }, []);
+  const { toggleMemberInvitationModal } = useWorkspaceStore();
 
   return (
     <>
@@ -25,7 +20,7 @@ function TeamDropdown({ board }) {
           className="w-full bg-orange-400 rounded-md mt-3 py-1"
           onClick={toggleMemberInvitationModal}
         >
-          Invite a user
+          Invite users
         </button>
       </article>
     </>
