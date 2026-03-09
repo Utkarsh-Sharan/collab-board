@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { userTaskAssignmentVerification } from "../controllers/user.controller.js";
+import {
+  searchUser,
+  userTaskAssignmentVerification,
+} from "../controllers/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { verifyArcjet } from "../middlewares/arcjet.middleware.js";
 
@@ -12,5 +15,6 @@ const router = Router();
 router
   .route("/:userName/verify")
   .get(verifyJWT, userTaskAssignmentVerification);
+router.route("/search").get(verifyJWT, searchUser);
 
 export default router;
