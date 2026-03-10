@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useWorkspaceStore } from "../../store/useWorkspace.store.js";
+import { Check } from "lucide-react";
 
 function MemberInvitationFormContainer() {
-  const { isLoading, currentBoard } = useWorkspaceStore();
+  const { isLoading, currentBoard, isVerified, verifyUser, inviteUser } =
+    useWorkspaceStore();
   const [memberFormData, setMemberFormData] = useState({
     email: "",
     role: "",
@@ -15,8 +17,19 @@ function MemberInvitationFormContainer() {
     }));
   };
 
-  const handleSubmit = () => {
-    //TODO
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!isVerified) {
+      verifyUser(memberFormData);
+    } else {
+      inviteUser(memberFormData);
+      
+      setMemberFormData(() => ({
+        email: "",
+        role: "",
+      }));
+    }
   };
 
   return (
@@ -72,17 +85,37 @@ function MemberInvitationFormContainer() {
       </button> */}
       </div>
 
-      <button
-        className="mt-10 bg-orange-400 w-full rounded-md py-3 text-lg font-semibold flex justify-center"
-        disabled={isLoading}
-        onClick={handleSubmit}
-      >
-        {isLoading ? (
-          <LoaderIcon className="w-full h-5 animate-spin" />
-        ) : (
-          "Verify user"
-        )}
-      </button>
+      {isVerified ? (
+        <>
+          <div className="mt-10 flex justify-center items-center gap-2 text-teal-500">
+            <Check />
+            <p>User Verified</p>
+          </div>
+          <button
+            className="mt-3 bg-orange-400 w-full rounded-md py-3 text-lg font-semibold flex justify-center"
+            disabled={isLoading}
+            onClick={handleSubmit}
+          >
+            {isLoading ? (
+              <LoaderIcon className="w-full h-5 animate-spin" />
+            ) : (
+              "Invite user"
+            )}
+          </button>
+        </>
+      ) : (
+        <button
+          className="mt-10 bg-orange-400 w-full rounded-md py-3 text-lg font-semibold flex justify-center"
+          disabled={isLoading}
+          onClick={handleSubmit}
+        >
+          {isLoading ? (
+            <LoaderIcon className="w-full h-5 animate-spin" />
+          ) : (
+            "Verify user"
+          )}
+        </button>
+      )}
     </form>
   );
 }

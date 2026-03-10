@@ -46,7 +46,9 @@ const searchUser = asyncHandler(async (req, res) => {
   const { email } = req.body;
   if(!email) throw new ApiError(400, "Email is required!");
 
-  const user = await User.findOne(email);
+  const user = await User.findOne({ email }).select(
+    "-password -refreshToken -emailVerificationExpiry -emailVerificationToken",
+  );
   if (!user) throw new ApiError(404, "User not found!");
 
   return res.status(200).json(new ApiResponse(200, { user }, "User found!"));

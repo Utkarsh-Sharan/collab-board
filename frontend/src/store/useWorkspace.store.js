@@ -8,10 +8,10 @@ export const useWorkspaceStore = create((set, get) => ({
   isCreatingNewBoard: false,
   isLoading: false,
   isInvitingMembers: false,
+  isVerified: false,
   boards: [],
   currentBoard: null,
   refreshBoards: false,
-  
 
   toggleUserSettings: () => {
     const currentState = get().isUserSettingsVisible;
@@ -76,4 +76,36 @@ export const useWorkspaceStore = create((set, get) => ({
       set({ isLoading: false, isCreatingNewBoard: false });
     }
   },
+
+  verifyUser: async (data) => {
+    try {
+      await axiosInstance.post("/users/search", data);
+      
+      set({ isVerified: true });
+    } catch (error) {
+      const backend = error?.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
+
+      toast.error(message);
+    }
+  },
+
+  inviteUser: async (data) => {
+    try {
+      console.log(data);
+    } catch (error) {
+      const backend = error?.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
+
+      toast.error(message);
+    } finally {
+      set({isVerified: false});
+    }
+  }
 }));

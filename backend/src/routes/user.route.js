@@ -15,6 +15,6 @@ const router = Router();
 router
   .route("/:userName/verify")
   .get(verifyJWT, userTaskAssignmentVerification);
-router.route("/search").get(verifyJWT, searchUser);
+router.route("/search").post(verifyJWT, searchUser);
 
 export default router;
