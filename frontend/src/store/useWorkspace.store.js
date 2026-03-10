@@ -78,6 +78,8 @@ export const useWorkspaceStore = create((set, get) => ({
   },
 
   verifyUser: async (data) => {
+    set({isLoading: true});
+
     try {
       await axiosInstance.post("/users/search", data);
       
@@ -90,12 +92,17 @@ export const useWorkspaceStore = create((set, get) => ({
         "Something went wrong!";
 
       toast.error(message);
+    } finally {
+      set({ isLoading: false });
     }
   },
 
   inviteUser: async (data) => {
+    set({ isLoading: true });
+
     try {
-      console.log(data);
+      const res = await axiosInstance.post(`/boards/${get().currentBoard._id}/invite`, data);
+      toast.success(res.data.message);
     } catch (error) {
       const backend = error?.response?.data;
       const message =
@@ -105,7 +112,7 @@ export const useWorkspaceStore = create((set, get) => ({
 
       toast.error(message);
     } finally {
-      set({isVerified: false});
+      set({isVerified: false, isLoading: false});
     }
   }
 }));

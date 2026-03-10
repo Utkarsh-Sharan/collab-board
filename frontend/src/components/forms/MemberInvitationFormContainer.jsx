@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useWorkspaceStore } from "../../store/useWorkspace.store.js";
-import { Check } from "lucide-react";
+import { Check, Loader } from "lucide-react";
 
 function MemberInvitationFormContainer() {
   const { isLoading, currentBoard, isVerified, verifyUser, inviteUser } =
@@ -24,7 +24,7 @@ function MemberInvitationFormContainer() {
       verifyUser(memberFormData);
     } else {
       inviteUser(memberFormData);
-      
+
       setMemberFormData(() => ({
         email: "",
         role: "",
@@ -74,9 +74,9 @@ function MemberInvitationFormContainer() {
             <option value="" disabled>
               Select a role
             </option>
-            <option value="ADMIN">Admin</option>
-            <option value="EDITOR">Editor</option>
-            <option value="VIEWER">Viewer</option>
+            <option value="Admin">Admin</option>
+            <option value="Editor">Editor</option>
+            <option value="Viewer">Viewer</option>
           </select>
         </div>
 
@@ -97,7 +97,7 @@ function MemberInvitationFormContainer() {
             onClick={handleSubmit}
           >
             {isLoading ? (
-              <LoaderIcon className="w-full h-5 animate-spin" />
+              <Loader className="w-full h-5 animate-spin" />
             ) : (
               "Invite user"
             )}
@@ -110,7 +110,7 @@ function MemberInvitationFormContainer() {
           onClick={handleSubmit}
         >
           {isLoading ? (
-            <LoaderIcon className="w-full h-5 animate-spin" />
+            <Loader className="w-full h-5 animate-spin" />
           ) : (
             "Verify user"
           )}
