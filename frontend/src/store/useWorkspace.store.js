@@ -9,6 +9,8 @@ export const useWorkspaceStore = create((set, get) => ({
   isLoading: false,
   isInvitingMembers: false,
   isVerified: false,
+  isVerifying: false,
+  isInviting: false,
   boards: [],
   currentBoard: null,
   refreshBoards: false,
@@ -78,12 +80,13 @@ export const useWorkspaceStore = create((set, get) => ({
   },
 
   verifyUser: async (data) => {
-    set({isLoading: true});
+    set({ isVerifying: true });
 
     try {
       await axiosInstance.post("/users/search", data);
-      
-      set({ isVerified: true });
+      set({ isVerifying: false, isVerified: true });
+
+      await get().inviteUser(data);
     } catch (error) {
       const backend = error?.response?.data;
       const message =
@@ -93,15 +96,18 @@ export const useWorkspaceStore = create((set, get) => ({
 
       toast.error(message);
     } finally {
-      set({ isLoading: false });
+      set({ isVerifying: false });
     }
   },
 
   inviteUser: async (data) => {
-    set({ isLoading: true });
+    set({ isInviting: true });
 
     try {
-      const res = await axiosInstance.post(`/boards/${get().currentBoard._id}/invite`, data);
+      const res = await axiosInstance.post(
+        `/boards/${get().currentBoard._id}/invite`,
+        data,
+      );
       toast.success(res.data.message);
     } catch (error) {
       const backend = error?.response?.data;
@@ -112,7 +118,7 @@ export const useWorkspaceStore = create((set, get) => ({
 
       toast.error(message);
     } finally {
-      set({isVerified: false, isLoading: false});
+      set({ isVerified: false, isInviting: false });
     }
-  }
+  },
 }));

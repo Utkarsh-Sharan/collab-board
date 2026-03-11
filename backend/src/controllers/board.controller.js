@@ -139,8 +139,10 @@ const inviteMember = asyncHandler(async (req, res) => {
   const board = req.board;
   const adminName = req.user.fullName;
 
-  if (!AvailableUserRoles.includes(role))
-    throw new ApiError(400, "Invalid role provided!");
+  if (!AvailableUserRoles.includes(role)){
+    if(role !== "")
+      throw new ApiError(400, "Invalid role provided!");
+  }
 
   const user = await User.findOne({ email });
   if (!user) throw new ApiError(404, "User not found!");
@@ -163,7 +165,7 @@ const inviteMember = asyncHandler(async (req, res) => {
     email: email,
     boardId: board._id,
     invitedBy: adminName,
-    role: role,
+    role: role ? role : "Viewer",
   });
 
   const { unhashedToken, hashedToken, tokenExpiry } =
@@ -236,7 +238,7 @@ const acceptInvite = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, { board }, "User accepted the invite!"));
+    .json(new ApiResponse(200, { board }, "Invite accepted successfully!"));
 });
 
 const changeMemberRole = asyncHandler(async (req, res) => {

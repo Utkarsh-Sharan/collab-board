@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { useWorkspaceStore } from "../../store/useWorkspace.store.js";
-import { Check, Loader } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 
 function MemberInvitationFormContainer() {
-  const { isLoading, currentBoard, isVerified, verifyUser, inviteUser } =
-    useWorkspaceStore();
+  const {
+    currentBoard,
+    isVerified,
+    verifyUser,
+    isVerifying,
+    isInviting,
+  } = useWorkspaceStore();
   const [memberFormData, setMemberFormData] = useState({
     email: "",
     role: "",
@@ -22,8 +27,6 @@ function MemberInvitationFormContainer() {
 
     if (!isVerified) {
       verifyUser(memberFormData);
-    } else {
-      inviteUser(memberFormData);
 
       setMemberFormData(() => ({
         email: "",
@@ -45,7 +48,7 @@ function MemberInvitationFormContainer() {
 
       <h5>Board name: {currentBoard.title}</h5>
 
-      <div className="mt-10 flex justify-center items-center gap-2 max-h-28 overflow-y-auto">
+      <div className="mt-10 flex justify-center items-center gap-2">
         <div>
           <label htmlFor="email" className="text-sm font-light">
             Email
@@ -85,35 +88,28 @@ function MemberInvitationFormContainer() {
       </button> */}
       </div>
 
-      {isVerified ? (
+      {isVerifying ? (
+        <div className="mt-5 flex justify-center items-center gap-2 text-teal-500">
+          <Loader2 className="animate-spin" />
+          <p>Verifying user...</p>
+        </div>
+      ) : isVerified && isInviting ? (
         <>
-          <div className="mt-10 flex justify-center items-center gap-2 text-teal-500">
+          <div className="mt-5 flex justify-center items-center gap-2 text-teal-500">
             <Check />
-            <p>User Verified</p>
+            <p>User verified</p>
           </div>
-          <button
-            className="mt-3 bg-orange-400 w-full rounded-md py-3 text-lg font-semibold flex justify-center"
-            disabled={isLoading}
-            onClick={handleSubmit}
-          >
-            {isLoading ? (
-              <Loader className="w-full h-5 animate-spin" />
-            ) : (
-              "Invite user"
-            )}
-          </button>
+          <div className="mt-3 flex justify-center items-center gap-2 text-teal-500">
+            <Loader2 className="animate-spin" />
+            <p>Sending invitation...</p>
+          </div>
         </>
       ) : (
         <button
-          className="mt-10 bg-orange-400 w-full rounded-md py-3 text-lg font-semibold flex justify-center"
-          disabled={isLoading}
+          className="w-full bg-orange-400 rounded-md mt-5 py-1"
           onClick={handleSubmit}
         >
-          {isLoading ? (
-            <Loader className="w-full h-5 animate-spin" />
-          ) : (
-            "Verify user"
-          )}
+          Invite user
         </button>
       )}
     </form>
