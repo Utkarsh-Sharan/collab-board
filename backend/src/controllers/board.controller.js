@@ -139,9 +139,8 @@ const inviteMember = asyncHandler(async (req, res) => {
   const board = req.board;
   const adminName = req.user.fullName;
 
-  if (!AvailableUserRoles.includes(role)){
-    if(role !== "")
-      throw new ApiError(400, "Invalid role provided!");
+  if (!AvailableUserRoles.includes(role)) {
+    if (role !== "") throw new ApiError(400, "Invalid role provided!");
   }
 
   const user = await User.findOne({ email });
@@ -197,6 +196,35 @@ const inviteMember = asyncHandler(async (req, res) => {
         201,
         { createdInvite },
         "Invitation created and board invitation mail sent successfully!",
+      ),
+    );
+});
+
+const getBoardViaInviteToken = asyncHandler(async (req, res) => {
+  const inviteToken = req.params.inviteToken;
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(inviteToken)
+    .digest("hex");
+
+  const invite = await Invite.findOne({
+    token: hashedToken,
+    status: InviteStatusEnum.PENDING,
+    tokenExpiry: { $gt: Date.now() },
+  });
+
+  if (!invite) throw new ApiError(400, "Invite is invalid or has expired!");
+
+  const board = await Board.findById(invite.boardId);
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { boardTitle: board.title },
+        "Successfully fetched board via invite token!",
       ),
     );
 });
@@ -307,6 +335,7 @@ export {
   deleteBoard,
   restoreDeletedBoard,
   inviteMember,
+  getBoardViaInviteToken,
   acceptInvite,
   changeMemberRole,
   removeMember,

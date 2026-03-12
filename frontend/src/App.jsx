@@ -6,6 +6,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
 import PageLoader from "./components/PageLoader.jsx";
 import { useAuthStore } from "./store/useAuth.store.js";
 import { useEffect } from "react";
+import BoardInvitePage from "./pages/BoardInvitePage.jsx";
 
 function App() {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
@@ -30,8 +31,14 @@ function App() {
             !authUser ? <LoginSignupPage /> : <Navigate to={"/workspace"} />
           }
         />
-        <Route path="/reset-password/:resetToken"
-          element={<ResetPasswordPage />}/>
+        <Route
+          path="/reset-password/:resetToken"
+          element={<ResetPasswordPage />}
+        />
+        <Route
+          path="/board-invite/:inviteToken"
+          element={authUser ? <BoardInvitePage /> : <Navigate to={"/login"} />}
+        />
       </Routes>
 
       <Toaster />
