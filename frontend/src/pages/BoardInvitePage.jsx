@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import icon from "../assets/collab-board-icon.png";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PageLoader from "../components/PageLoader";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
@@ -8,10 +8,16 @@ import toast from "react-hot-toast";
 function BoardInvitePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [boardTitle, setBoardTitle] = useState("");
+  const [isInviteInvalid, setIsInviteInvalid] = useState(false);
 
   const { inviteToken } = useParams();
+  const navigate = useNavigate();
 
-  const handleSubmit = () => {};
+  const goToWorkspace = () => {
+    navigate("/workspace");
+  };
+
+  // const handleSubmit = () => {};
 
   useEffect(() => {
     const onLoadHandler = async () => {
@@ -26,6 +32,7 @@ function BoardInvitePage() {
           "Something went wrong!";
 
         toast.error(message);
+        setIsInviteInvalid(true);
       } finally {
         setIsLoading(false);
       }
@@ -44,22 +51,43 @@ function BoardInvitePage() {
           <h3 className="text-xl font-semibold">CollabBoard</h3>
         </div>
 
-        <div className="mt-10">
-          <h1 className="text-3xl">Hey there!</h1>
-          <p className="text-orange-400 text-lg">
-            You have been invited to a board named {boardTitle}. Do you accept
-            this invitaion?
-          </p>
-        </div>
+        {!isInviteInvalid ? (
+          <>
+            <div className="mt-10">
+              <h1 className="text-3xl">Hey there!</h1>
+              <p className="text-orange-400 text-lg">
+                You have been invited to a board named{" "}
+                <strong className="text-teal-500">
+                  <em>{boardTitle}</em>
+                </strong>
+                . Do you want to accept this invitaion?
+              </p>
+            </div>
 
-        <div className="flex justify-center items-center gap-2 mt-5">
-          <button className="bg-teal-500 text-white rounded-md w-1/2 py-2 text-xl">
-            Yes
-          </button>
-          <button className="bg-red-400 text-white rounded-md w-1/2 py-2 text-xl">
-            No
-          </button>
-        </div>
+            <div className="flex justify-center items-center gap-2 mt-5">
+              <button className="bg-teal-500 text-white rounded-md w-1/2 py-2 text-xl">
+                Yes
+              </button>
+              <button className="bg-red-400 text-white rounded-md w-1/2 py-2 text-xl">
+                No
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="mt-10">
+            <h1 className="text-3xl">Oops!</h1>
+            <p className="text-orange-400 text-lg">
+              Looks like the invite is invalid. Please request the board admin
+              for a new invite.
+            </p>
+            <button
+              className="bg-orange-400 rounded-md w-full py-2 text-xl mt-5"
+              onClick={goToWorkspace}
+            >
+              Go to workspace
+            </button>
+          </div>
+        )}
       </section>
     </main>
   );

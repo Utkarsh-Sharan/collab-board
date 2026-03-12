@@ -45,7 +45,7 @@ function Board() {
         {isLoading ? (
           <Loader className="h-5 animate-spin" />
         ) : (
-          boards?.length && boards?.map((board) => {
+          boards?.map((board) => {
             return (
               <BoardCard
                 key={board._id}
