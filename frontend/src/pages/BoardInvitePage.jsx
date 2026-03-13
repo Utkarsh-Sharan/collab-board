@@ -4,11 +4,22 @@ import { useNavigate, useParams } from "react-router-dom";
 import PageLoader from "../components/PageLoader";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
+import DecisionButtons from "../components/buttons/DecisionButtons.jsx";
+import { Check, Loader2, X } from "lucide-react";
 
 function BoardInvitePage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [boardTitle, setBoardTitle] = useState("");
+  const [boardData, setBoardData] = useState({
+    boardId: "",
+    boardTitle: "",
+  });
   const [isInviteInvalid, setIsInviteInvalid] = useState(false);
+  const [isResponding, setIsResponding] = useState(false);
+  const [hasResponded, setHasResponded] = useState(false);
+  const [inviteResponse, setInviteResponse] = useState({
+    isAccepted: false,
+    response: "",
+  });
 
   const { inviteToken } = useParams();
   const navigate = useNavigate();
@@ -17,13 +28,91 @@ function BoardInvitePage() {
     navigate("/workspace");
   };
 
-  // const handleSubmit = () => {};
+  const acceptInvite = async () => {
+    setIsResponding(true);
+
+    try {
+      const res = await axiosInstance.post(
+        `boards/${boardData.boardId}/accept-invite/${inviteToken}`,
+      );
+
+      setInviteResponse({ isAccepted: true, response: res.data.message });
+    } catch (error) {
+      const backend = error?.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
+
+      toast.error(message);
+    } finally {
+      setIsResponding(false);
+      setHasResponded(true);
+    }
+  };
+
+  const rejectInvite = async () => {
+    setIsResponding(true);
+
+    try {
+      const res = await axiosInstance.post(
+        `boards/${boardData.boardId}/reject-invite/${inviteToken}`,
+      );
+
+      setInviteResponse({ isAccepted: false, response: res.data.message });
+    } catch (error) {
+      const backend = error?.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
+
+      toast.error(message);
+    } finally {
+      setIsResponding(false);
+      setHasResponded(true);
+    }
+  };
+
+  const renderContent = () => {
+    if (isResponding) {
+      return (
+        <div className="flex justify-center items-center gap-2 text-teal-500">
+          <Loader2 className="animate-spin" />
+          <p>Sending Response...</p>
+        </div>
+      );
+    } else if (hasResponded) {
+      return (
+        <>
+          <div
+            className={`flex justify-center items-center gap-2 ${inviteResponse.isAccepted ? "text-teal-500" : "text-red-400"} mt-5`}
+          >
+            {inviteResponse.isAccepted ? <Check /> : <X />}
+            <p>{inviteResponse.response}</p>
+          </div>
+
+          <button
+            className="bg-orange-400 rounded-md w-full py-2 text-xl mt-5"
+            onClick={goToWorkspace}
+          >
+            Go to workspace
+          </button>
+        </>
+      );
+    }
+
+    return <DecisionButtons onYes={acceptInvite} onNo={rejectInvite} />;
+  };
 
   useEffect(() => {
     const onLoadHandler = async () => {
       try {
         const res = await axiosInstance.get(`/boards/invite/${inviteToken}`);
-        setBoardTitle(res.data.data.boardTitle);
+        setBoardData({
+          boardId: res.data.data.boardId,
+          boardTitle: res.data.data.boardTitle,
+        });
       } catch (error) {
         const backend = error?.response?.data;
         const message =
@@ -58,20 +147,13 @@ function BoardInvitePage() {
               <p className="text-orange-400 text-lg">
                 You have been invited to a board named{" "}
                 <strong className="text-teal-500">
-                  <em>{boardTitle}</em>
+                  <em>{boardData.boardTitle}</em>
                 </strong>
                 . Do you want to accept this invitaion?
               </p>
             </div>
 
-            <div className="flex justify-center items-center gap-2 mt-5">
-              <button className="bg-teal-500 text-white rounded-md w-1/2 py-2 text-xl">
-                Yes
-              </button>
-              <button className="bg-red-400 text-white rounded-md w-1/2 py-2 text-xl">
-                No
-              </button>
-            </div>
+            {renderContent()}
           </>
         ) : (
           <div className="mt-10">

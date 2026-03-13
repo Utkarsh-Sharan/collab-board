@@ -156,6 +156,7 @@ const inviteMember = asyncHandler(async (req, res) => {
     email,
     boardId: board._id,
     status: InviteStatusEnum.PENDING,
+    tokenExpiry: { $gt: Date.now() },
   });
   if (existingInvite)
     throw new ApiError(400, "An invite is already pending for this user!");
@@ -223,7 +224,7 @@ const getBoardViaInviteToken = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        { boardTitle: board.title },
+        { boardId: board._id, boardTitle: board.title },
         "Successfully fetched board via invite token!",
       ),
     );
@@ -267,6 +268,31 @@ const acceptInvite = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, { board }, "Invite accepted successfully!"));
+});
+
+const rejectInvite = asyncHandler(async (req, res) => {
+  const { inviteToken } = req.params;
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(inviteToken)
+    .digest("hex");
+
+  const invite = await Invite.findOne({
+    token: hashedToken,
+    status: InviteStatusEnum.PENDING,
+    tokenExpiry: { $gt: Date.now() },
+  });
+
+  if (!invite) throw new ApiError(400, "Invite is invalid or has expired!");
+
+  invite.status = InviteStatusEnum.REJECTED;
+  invite.token = undefined;
+  invite.tokenExpiry = undefined;
+
+  await invite.save({ validateBeforeSave: false });
+
+  return res.status(200).json(new ApiResponse(200, {}, "Invite rejected!"));
 });
 
 const changeMemberRole = asyncHandler(async (req, res) => {
@@ -337,6 +363,7 @@ export {
   inviteMember,
   getBoardViaInviteToken,
   acceptInvite,
+  rejectInvite,
   changeMemberRole,
   removeMember,
 };

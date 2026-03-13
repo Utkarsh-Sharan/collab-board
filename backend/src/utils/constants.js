@@ -11,6 +11,7 @@ export const InviteStatusEnum = {
   ACCEPTED: "Accepted",
   EXPIRED: "Expired",
   REVOKED: "Revoked",
+  REJECTED: "Rejected"
 };
 
 export const AvailableInviteStatus = Object.values(InviteStatusEnum);
