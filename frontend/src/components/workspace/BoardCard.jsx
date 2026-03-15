@@ -28,7 +28,7 @@ function BoardCard({board, isDropdownActive, onToggle}) {
           {isDropdownActive ? <ChevronUp /> : <ChevronDown />}
         </button>
 
-        {isDropdownActive && <TeamDropdown board={board} />}
+        {isDropdownActive && <TeamDropdown />}
 
         <button className="rounded-md bg-teal-400 px-2 py-1 text-white">
           View Board

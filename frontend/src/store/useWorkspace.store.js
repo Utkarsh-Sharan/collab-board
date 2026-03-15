@@ -11,6 +11,7 @@ export const useWorkspaceStore = create((set, get) => ({
   isVerified: false,
   isVerifying: false,
   isInviting: false,
+  isManagingBoardTeam: false,
   boards: [],
   currentBoard: null,
   refreshBoards: false,
@@ -33,6 +34,11 @@ export const useWorkspaceStore = create((set, get) => ({
   toggleMemberInvitationModal: () => {
     const currentState = get().isInvitingMembers;
     set({ isInvitingMembers: !currentState });
+  },
+
+  toggleBoardTeamModal: () => {
+    const currentState = get().isManagingBoardTeam;
+    set({isManagingBoardTeam: !currentState});
   },
 
   setCurrentBoard: (board) => set({ currentBoard: board }),

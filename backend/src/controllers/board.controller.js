@@ -28,7 +28,14 @@ const createBoard = asyncHandler(async (req, res) => {
     title,
     description,
     createdBy: user._id,
-    members: [{ userId: user._id, role: UserRolesEnum.ADMIN }],
+    members: [
+      {
+        userId: user._id,
+        role: UserRolesEnum.ADMIN,
+        fullName: user.fullName,
+        avatar: user.avatar.url,
+      },
+    ],
     adminCount: 1,
   });
 
@@ -196,7 +203,7 @@ const inviteMember = asyncHandler(async (req, res) => {
       new ApiResponse(
         201,
         { createdInvite },
-        "Invitation created and board invitation mail sent successfully!",
+        "Board invitation mail sent successfully!",
       ),
     );
 });
@@ -232,6 +239,7 @@ const getBoardViaInviteToken = asyncHandler(async (req, res) => {
 
 const acceptInvite = asyncHandler(async (req, res) => {
   const { inviteToken } = req.params;
+  const user = req.user;
 
   const hashedToken = crypto
     .createHash("sha256")
@@ -250,8 +258,10 @@ const acceptInvite = asyncHandler(async (req, res) => {
   if (!board) throw new ApiError(404, "Board not found!");
 
   board.members.push({
-    userId: req.user._id,
+    userId: user._id,
     role: invite.role,
+    fullName: user.fullName,
+    avatar: user.avatar.url,
   });
 
   if (invite.role === UserRolesEnum.ADMIN) ++board.adminCount;
