@@ -31,7 +31,7 @@ function BoardTeamModal() {
         </div>
 
         <div className="max-h-28 overflow-y-auto space-y-2 mt-10">
-          {currentBoard.members.map((member) => (
+          {currentBoard?.members?.map((member) => (
               <TeamMember key={member.userId} member={member} />
             ))}
         </div>

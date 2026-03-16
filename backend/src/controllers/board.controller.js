@@ -331,12 +331,12 @@ const changeMemberRole = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, { board }, "User role updated successfully!"));
+    .json(new ApiResponse(200, {}, "User role updated successfully!"));
 });
 
 const removeMember = asyncHandler(async (req, res) => {
   const board = req.board;
-  const memberToRemoveId = req.params.memberId;
+  const memberToRemoveId = req.body.memberId;
 
   const memberToRemove = board.members.find(
     (m) => m.userId.toString() === memberToRemoveId.toString(),

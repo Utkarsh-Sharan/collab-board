@@ -78,7 +78,7 @@ router
     changeMemberRole,
   );
 router
-  .route("/:boardId/member/:memberId")
+  .route("/:boardId/members/remove-member")
   .delete(verifyUserAndActiveBoard, verifyRole("removeMember"), removeMember);
 
 export default router;
