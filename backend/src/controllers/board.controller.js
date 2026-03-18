@@ -306,12 +306,11 @@ const rejectInvite = asyncHandler(async (req, res) => {
 });
 
 const changeMemberRole = asyncHandler(async (req, res) => {
-  const { newRole } = req.body;
+  const { newRole, memberId } = req.body;
 
   if (!AvailableUserRoles.includes(newRole))
     throw new ApiError(400, "Please provide a valid role!");
 
-  const { memberId } = req.params;
   const board = req.board;
   const member = board.members.find(
     (m) => m.userId.toString() === memberId.toString(),
@@ -322,6 +321,9 @@ const changeMemberRole = asyncHandler(async (req, res) => {
   const prevRole = member.role;
   if (prevRole !== newRole) member.role = newRole;
 
+  if(prevRole === UserRolesEnum.ADMIN && board.adminCount === 1)
+    throw new ApiError(400, "Cannot change the role of last Admin!");
+  
   if (prevRole !== UserRolesEnum.ADMIN && newRole === UserRolesEnum.ADMIN)
     ++board.adminCount;
   else if (prevRole === UserRolesEnum.ADMIN && newRole !== UserRolesEnum.ADMIN)
@@ -331,7 +333,7 @@ const changeMemberRole = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "User role updated successfully!"));
+    .json(new ApiResponse(200, {}, "Member role updated successfully!"));
 });
 
 const removeMember = asyncHandler(async (req, res) => {

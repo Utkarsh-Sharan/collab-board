@@ -71,7 +71,7 @@ router
   .route("/:boardId/reject-invite/:inviteToken")
   .post(verifyJWT, rejectInvite);
 router
-  .route("/:boardId/member/:memberId")
+  .route("/:boardId/members/update-role")
   .patch(
     verifyUserAndActiveBoard,
     verifyRole("changeMemberRole"),

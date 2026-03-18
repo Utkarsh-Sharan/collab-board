@@ -20,6 +20,7 @@ export const useWorkspaceStore = create((set, get) => ({
     memberId: null,
     actionDescription: null,
     actionToPerform: null,
+    newRole: "",
   },
   refreshBoards: false,
 
@@ -61,11 +62,21 @@ export const useWorkspaceStore = create((set, get) => ({
         memberId: data.memberId,
         actionDescription: data.actionDescription,
         action: data.action,
+        newRole: data.newRole,
       },
     }),
 
   performAction: (action) => {
     switch (action) {
+      case ActionsOnMembersEnum.UPDATE_USER_ROLE: {
+        const data = {
+          memberId: get().memberToPerformActionUpon.memberId,
+          newRole: get().memberToPerformActionUpon.newRole,
+        };
+        get().updateUserRole(data);
+        break;
+      }
+
       case ActionsOnMembersEnum.REMOVE_USER: {
         const data = { memberId: get().memberToPerformActionUpon.memberId };
         get().removeUser(data);
@@ -156,6 +167,25 @@ export const useWorkspaceStore = create((set, get) => ({
       toast.error(message);
     } finally {
       set({ isVerified: false, isInviting: false });
+    }
+  },
+
+  updateUserRole: async (data) => {
+    try {
+      const res = await axiosInstance.patch(
+        `/boards/${get().currentBoard._id}/members/update-role`,
+        data,
+      );
+
+      toast.success(res.data.message);
+    } catch (error) {
+      const backend = error?.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
+
+      toast.error(message);
     }
   },
 

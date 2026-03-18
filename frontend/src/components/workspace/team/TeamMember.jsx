@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useWorkspaceStore } from "../../../store/useWorkspace.store.js";
 import {
   ActionDescriptionEnum,
@@ -5,8 +6,24 @@ import {
 } from "../../../utils/constants.js";
 
 function TeamMember({ member }) {
+  const [newRole, setNewRole] = useState("");
+
   const { toggleDecisionModal, setMemberToPerformActionUpon } =
     useWorkspaceStore();
+
+  const handleMemberRoleUpdate = (e) => {
+    const selectedRole = e.target.value;
+    setNewRole(selectedRole);
+
+    setMemberToPerformActionUpon({
+      memberId: member.userId,
+      actionDescription: ActionDescriptionEnum.UPDATE_USER_ROLE,
+      action: ActionsOnMembersEnum.UPDATE_USER_ROLE,
+      newRole: selectedRole,
+    });
+
+    toggleDecisionModal();
+  };
 
   const handleRemove = () => {
     setMemberToPerformActionUpon({
@@ -14,12 +31,12 @@ function TeamMember({ member }) {
       actionDescription: ActionDescriptionEnum.REMOVE_USER,
       action: ActionsOnMembersEnum.REMOVE_USER,
     });
-    
+
     toggleDecisionModal();
-  }
+  };
 
   return (
-    <article className="flex justify-between items-center border border-gray-300 rounded-md p-2">
+    <article className="flex justify-between items-center border border-orange-400 rounded-md p-2">
       <div className="flex gap-2 justify-center items-center">
         <img
           src={member.avatar}
@@ -33,12 +50,28 @@ function TeamMember({ member }) {
         </div>
       </div>
 
-      <button
-        className="p-1 bg-red-400 text-white rounded-md"
-        onClick={handleRemove}
-      >
-        Remove
-      </button>
+      <div className="flex justify-center items-center gap-2">
+        <select
+          className="w-full px-3 py-1 border border-orange-200 rounded-md"
+          name="role"
+          value={newRole}
+          onChange={handleMemberRoleUpdate}
+        >
+          <option value="" disabled>
+            Update role
+          </option>
+          <option value="Admin">Admin</option>
+          <option value="Editor">Editor</option>
+          <option value="Viewer">Viewer</option>
+        </select>
+
+        <button
+          className="p-1 bg-red-400 text-white rounded-md"
+          onClick={handleRemove}
+        >
+          Remove
+        </button>
+      </div>
     </article>
   );
 }
