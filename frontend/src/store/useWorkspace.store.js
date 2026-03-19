@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
-import { ActionsOnMembersEnum } from "../utils/constants.js";
+import { ActionsOnEntitiesEnum } from "../utils/constants.js";
 
 export const useWorkspaceStore = create((set, get) => ({
   isUserSettingsVisible: false,
@@ -16,8 +16,8 @@ export const useWorkspaceStore = create((set, get) => ({
   isMakingDecision: false,
   boards: [],
   currentBoard: null,
-  memberToPerformActionUpon: {
-    memberId: null,
+  targetEntity: {
+    entityId: null,
     actionDescription: null,
     actionToPerform: null,
     newRole: "",
@@ -56,32 +56,40 @@ export const useWorkspaceStore = create((set, get) => ({
 
   setCurrentBoard: (board) => set({ currentBoard: board }),
 
-  setMemberToPerformActionUpon: (data) =>
+  setTargetEntity: (data) =>
     set({
-      memberToPerformActionUpon: {
-        memberId: data.memberId,
+      targetEntity: {
+        entityId: data.entityId,
         actionDescription: data.actionDescription,
         action: data.action,
         newRole: data.newRole,
       },
     }),
 
+  toggleRefreshBoards: () => {
+    set({ refreshBoards: !get().refreshBoards });
+  },
+
   performAction: (action) => {
     switch (action) {
-      case ActionsOnMembersEnum.UPDATE_USER_ROLE: {
+      case ActionsOnEntitiesEnum.UPDATE_USER_ROLE: {
         const data = {
-          memberId: get().memberToPerformActionUpon.memberId,
-          newRole: get().memberToPerformActionUpon.newRole,
+          memberId: get().targetEntity.entityId,
+          newRole: get().targetEntity.newRole,
         };
         get().updateUserRole(data);
         break;
       }
 
-      case ActionsOnMembersEnum.REMOVE_USER: {
-        const data = { memberId: get().memberToPerformActionUpon.memberId };
+      case ActionsOnEntitiesEnum.REMOVE_USER: {
+        const data = { memberId: get().targetEntity.entityId };
         get().removeUser(data);
         break;
       }
+
+      case ActionsOnEntitiesEnum.DELETE_BOARD:
+        get().deleteBoard();
+        break;
     }
   },
 
@@ -111,7 +119,7 @@ export const useWorkspaceStore = create((set, get) => ({
     try {
       const res = await axiosInstance.post("/boards/", data);
 
-      set({ refreshBoards: !get().refreshBoards });
+      get().toggleRefreshBoards();
 
       toast.success(res.data.message);
     } catch (error) {
@@ -124,6 +132,25 @@ export const useWorkspaceStore = create((set, get) => ({
       toast.error(message);
     } finally {
       set({ isLoading: false, isCreatingNewBoard: false });
+    }
+  },
+
+  deleteBoard: async () => {
+    try {
+      const res = await axiosInstance.delete(
+        `/boards/${get().currentBoard._id}`,
+      );
+
+      get().toggleRefreshBoards();
+      toast.success(res.data.message);
+    } catch (error) {
+      const backend = error?.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
+
+      toast.error(message);
     }
   },
 

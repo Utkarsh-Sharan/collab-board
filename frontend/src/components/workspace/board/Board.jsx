@@ -1,10 +1,12 @@
 import { Loader, Plus } from "lucide-react";
 import BoardCard from "./BoardCard.jsx";
-import { useWorkspaceStore } from "../../store/useWorkspace.store.js";
+import { useWorkspaceStore } from "../../../store/useWorkspace.store.js";
 import { useEffect, useState } from "react";
 
 function Board() {
-  const [activeDropdownBoardId, setActiveDropdownBoardId] = useState(null);
+  const [activeTeamDropdownBoardId, setActiveTeamDropdownBoardId] = useState(null);
+  const [activeSettingsDropdownBoardId, setActiveSettingsDropdownBoardId] =
+    useState(null);
 
   const {
     isLoading,
@@ -16,9 +18,14 @@ function Board() {
 
   const getAllBoards = useWorkspaceStore((state) => state.getAllBoards);
 
-  const handleDropdownToggle = (board) => {
+  const handleTeamDropdown = (board) => {
     setCurrentBoard(board);
-    setActiveDropdownBoardId((prev) => prev === board._id ? null : board._id)
+    setActiveTeamDropdownBoardId((prev) => (prev === board._id ? null : board._id));
+  };
+
+  const handleSettingsDropdown = (board) => {
+    setCurrentBoard(board);
+    setActiveSettingsDropdownBoardId((prev) => (prev === board._id ? null : board._id));
   }
 
   useEffect(() => {
@@ -50,8 +57,10 @@ function Board() {
               <BoardCard
                 key={board._id}
                 board={board}
-                isDropdownActive={activeDropdownBoardId === board._id}
-                onToggle={() => handleDropdownToggle(board)}
+                isTeamDropdownActive={activeTeamDropdownBoardId === board._id}
+                isSettingsDropdownActive={activeSettingsDropdownBoardId === board._id}
+                toggleTeamDropdown={() => handleTeamDropdown(board)}
+                toggleSettingsDropdown={() => handleSettingsDropdown(board)}
               />
             );
           })

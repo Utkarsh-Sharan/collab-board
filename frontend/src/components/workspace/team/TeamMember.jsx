@@ -2,23 +2,22 @@ import { useState } from "react";
 import { useWorkspaceStore } from "../../../store/useWorkspace.store.js";
 import {
   ActionDescriptionEnum,
-  ActionsOnMembersEnum,
+  ActionsOnEntitiesEnum,
 } from "../../../utils/constants.js";
 
 function TeamMember({ member }) {
   const [newRole, setNewRole] = useState("");
 
-  const { toggleDecisionModal, setMemberToPerformActionUpon } =
-    useWorkspaceStore();
+  const { toggleDecisionModal, setTargetEntity } = useWorkspaceStore();
 
   const handleMemberRoleUpdate = (e) => {
     const selectedRole = e.target.value;
     setNewRole(selectedRole);
 
-    setMemberToPerformActionUpon({
-      memberId: member.userId,
+    setTargetEntity({
+      entityId: member.userId,
       actionDescription: ActionDescriptionEnum.UPDATE_USER_ROLE,
-      action: ActionsOnMembersEnum.UPDATE_USER_ROLE,
+      action: ActionsOnEntitiesEnum.UPDATE_USER_ROLE,
       newRole: selectedRole,
     });
 
@@ -26,10 +25,10 @@ function TeamMember({ member }) {
   };
 
   const handleRemove = () => {
-    setMemberToPerformActionUpon({
-      memberId: member.userId,
+    setTargetEntity({
+      entityId: member.userId,
       actionDescription: ActionDescriptionEnum.REMOVE_USER,
-      action: ActionsOnMembersEnum.REMOVE_USER,
+      action: ActionsOnEntitiesEnum.REMOVE_USER,
     });
 
     toggleDecisionModal();

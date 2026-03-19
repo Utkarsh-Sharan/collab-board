@@ -1,4 +1,4 @@
-import Board from "./Board.jsx";
+import Board from "./board/Board.jsx";
 import Header from "./Header.jsx";
 
 function Workspace() {
