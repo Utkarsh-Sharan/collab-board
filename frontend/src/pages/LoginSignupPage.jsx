@@ -1,8 +1,8 @@
 import icon from "../assets/collab-board-icon.png";
 import { useAuthStore } from "../store/useAuth.store.js";
-import LoginForm from "../components/LoginForm.jsx";
-import SignupForm from "../components/SignupForm.jsx";
-import ResetPasswordForm from "../components/ResetPasswordForm.jsx";
+import LoginForm from "../components/forms/LoginForm.jsx";
+import SignupForm from "../components/forms/SignupForm.jsx";
+import ResetPasswordForm from "../components/forms/ResetPasswordForm.jsx";
 
 function LoginSignupPage() {
   const { activeForm, activeTab, setActiveTab } = useAuthStore();
@@ -14,9 +14,9 @@ function LoginSignupPage() {
   };
 
   return (
-    <>
+    <section className="h-full flex items-center justify-center">
       {/* Left Half */}
-      <section className="flex-col items-center w-11/12 md:max-w-xl gap-2 border-2 border-orange-200 rounded-2xl px-10 py-20">
+      <div className="flex-col items-center w-11/12 md:max-w-xl gap-2 border-2 border-orange-200 rounded-2xl px-10 py-20">
         <div className="flex items-center gap-2">
           <img src={icon} alt="app-image" className="w-6" />
           <h3 className="text-xl font-semibold">CollabBoard</h3>
@@ -48,8 +48,8 @@ function LoginSignupPage() {
         ) : (
           <ResetPasswordForm />
         )}
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
 

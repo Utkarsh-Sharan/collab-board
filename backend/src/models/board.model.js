@@ -31,6 +31,12 @@ const boardSchema = new Schema(
           enum: AvailableUserRoles,
           default: UserRolesEnum.VIEWER,
         },
+        fullName: {
+          type: String,
+        },
+        avatar: {
+          type: String,
+        },
       },
     ],
     lists: [

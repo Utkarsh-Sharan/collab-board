@@ -7,6 +7,8 @@ import {
   deleteBoard,
   restoreDeletedBoard,
   inviteMember,
+  rejectInvite,
+  getBoardViaInviteToken,
   acceptInvite,
   changeMemberRole,
   removeMember,
@@ -63,16 +65,20 @@ router
     verifyRole("inviteMember"),
     inviteMember,
   );
-router.route("/:boardId/invite/:inviteToken").post(verifyJWT, acceptInvite);
+router.route("/invite/:inviteToken").get(verifyJWT, getBoardViaInviteToken);
+router.route("/:boardId/accept-invite/:inviteToken").post(verifyJWT, acceptInvite);
 router
-  .route("/:boardId/member/:memberId")
+  .route("/:boardId/reject-invite/:inviteToken")
+  .post(verifyJWT, rejectInvite);
+router
+  .route("/:boardId/members/update-role")
   .patch(
     verifyUserAndActiveBoard,
     verifyRole("changeMemberRole"),
     changeMemberRole,
   );
 router
-  .route("/:boardId/member/:memberId")
+  .route("/:boardId/members/remove-member")
   .delete(verifyUserAndActiveBoard, verifyRole("removeMember"), removeMember);
 
 export default router;

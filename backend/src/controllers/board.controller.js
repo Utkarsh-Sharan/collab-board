@@ -28,7 +28,14 @@ const createBoard = asyncHandler(async (req, res) => {
     title,
     description,
     createdBy: user._id,
-    members: [{ userId: user._id, role: UserRolesEnum.ADMIN }],
+    members: [
+      {
+        userId: user._id,
+        role: UserRolesEnum.ADMIN,
+        fullName: user.fullName,
+        avatar: user.avatar.url,
+      },
+    ],
     adminCount: 1,
   });
 
@@ -139,8 +146,9 @@ const inviteMember = asyncHandler(async (req, res) => {
   const board = req.board;
   const adminName = req.user.fullName;
 
-  if (!AvailableUserRoles.includes(role))
-    throw new ApiError(400, "Invalid role provided!");
+  if (!AvailableUserRoles.includes(role)) {
+    if (role !== "") throw new ApiError(400, "Invalid role provided!");
+  }
 
   const user = await User.findOne({ email });
   if (!user) throw new ApiError(404, "User not found!");
@@ -155,6 +163,7 @@ const inviteMember = asyncHandler(async (req, res) => {
     email,
     boardId: board._id,
     status: InviteStatusEnum.PENDING,
+    tokenExpiry: { $gt: Date.now() },
   });
   if (existingInvite)
     throw new ApiError(400, "An invite is already pending for this user!");
@@ -163,7 +172,7 @@ const inviteMember = asyncHandler(async (req, res) => {
     email: email,
     boardId: board._id,
     invitedBy: adminName,
-    role: role,
+    role: role ? role : "Viewer",
   });
 
   const { unhashedToken, hashedToken, tokenExpiry } =
@@ -194,13 +203,43 @@ const inviteMember = asyncHandler(async (req, res) => {
       new ApiResponse(
         201,
         { createdInvite },
-        "Invitation created and board invitation mail sent successfully!",
+        "Board invitation mail sent successfully!",
+      ),
+    );
+});
+
+const getBoardViaInviteToken = asyncHandler(async (req, res) => {
+  const inviteToken = req.params.inviteToken;
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(inviteToken)
+    .digest("hex");
+
+  const invite = await Invite.findOne({
+    token: hashedToken,
+    status: InviteStatusEnum.PENDING,
+    tokenExpiry: { $gt: Date.now() },
+  });
+
+  if (!invite) throw new ApiError(400, "Invite is invalid or has expired!");
+
+  const board = await Board.findById(invite.boardId);
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { boardId: board._id, boardTitle: board.title },
+        "Successfully fetched board via invite token!",
       ),
     );
 });
 
 const acceptInvite = asyncHandler(async (req, res) => {
   const { inviteToken } = req.params;
+  const user = req.user;
 
   const hashedToken = crypto
     .createHash("sha256")
@@ -219,8 +258,10 @@ const acceptInvite = asyncHandler(async (req, res) => {
   if (!board) throw new ApiError(404, "Board not found!");
 
   board.members.push({
-    userId: req.user._id,
+    userId: user._id,
     role: invite.role,
+    fullName: user.fullName,
+    avatar: user.avatar.url,
   });
 
   if (invite.role === UserRolesEnum.ADMIN) ++board.adminCount;
@@ -236,16 +277,40 @@ const acceptInvite = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, { board }, "User accepted the invite!"));
+    .json(new ApiResponse(200, { board }, "Invite accepted successfully!"));
+});
+
+const rejectInvite = asyncHandler(async (req, res) => {
+  const { inviteToken } = req.params;
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(inviteToken)
+    .digest("hex");
+
+  const invite = await Invite.findOne({
+    token: hashedToken,
+    status: InviteStatusEnum.PENDING,
+    tokenExpiry: { $gt: Date.now() },
+  });
+
+  if (!invite) throw new ApiError(400, "Invite is invalid or has expired!");
+
+  invite.status = InviteStatusEnum.REJECTED;
+  invite.token = undefined;
+  invite.tokenExpiry = undefined;
+
+  await invite.save({ validateBeforeSave: false });
+
+  return res.status(200).json(new ApiResponse(200, {}, "Invite rejected!"));
 });
 
 const changeMemberRole = asyncHandler(async (req, res) => {
-  const { newRole } = req.body;
+  const { newRole, memberId } = req.body;
 
   if (!AvailableUserRoles.includes(newRole))
     throw new ApiError(400, "Please provide a valid role!");
 
-  const { memberId } = req.params;
   const board = req.board;
   const member = board.members.find(
     (m) => m.userId.toString() === memberId.toString(),
@@ -256,6 +321,9 @@ const changeMemberRole = asyncHandler(async (req, res) => {
   const prevRole = member.role;
   if (prevRole !== newRole) member.role = newRole;
 
+  if(prevRole === UserRolesEnum.ADMIN && board.adminCount === 1)
+    throw new ApiError(400, "Cannot change the role of last Admin!");
+  
   if (prevRole !== UserRolesEnum.ADMIN && newRole === UserRolesEnum.ADMIN)
     ++board.adminCount;
   else if (prevRole === UserRolesEnum.ADMIN && newRole !== UserRolesEnum.ADMIN)
@@ -265,12 +333,12 @@ const changeMemberRole = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, { board }, "User role updated successfully!"));
+    .json(new ApiResponse(200, {}, "Member role updated successfully!"));
 });
 
 const removeMember = asyncHandler(async (req, res) => {
   const board = req.board;
-  const memberToRemoveId = req.params.memberId;
+  const memberToRemoveId = req.body.memberId;
 
   const memberToRemove = board.members.find(
     (m) => m.userId.toString() === memberToRemoveId.toString(),
@@ -305,7 +373,9 @@ export {
   deleteBoard,
   restoreDeletedBoard,
   inviteMember,
+  getBoardViaInviteToken,
   acceptInvite,
+  rejectInvite,
   changeMemberRole,
   removeMember,
 };

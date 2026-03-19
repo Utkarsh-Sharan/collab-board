@@ -1,5 +1,5 @@
 import { LoaderIcon } from "lucide-react";
-import { useAuthStore } from "../store/useAuth.store.js";
+import { useAuthStore } from "../../store/useAuth.store.js";
 import { useState } from "react";
 
 function LoginForm() {

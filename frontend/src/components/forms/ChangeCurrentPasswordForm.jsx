@@ -1,6 +1,6 @@
 import { Loader, X } from "lucide-react";
-import { useWorkspaceStore } from "../store/useWorkspace.store.js";
-import { useAuthStore } from "../store/useAuth.store.js";
+import { useWorkspaceStore } from "../../store/useWorkspace.store.js";
+import { useAuthStore } from "../../store/useAuth.store.js";
 
 function ChangeCurrentPasswordForm() {
   const { isChangingCurrentPassword, changeCurrentPassword } = useAuthStore();
