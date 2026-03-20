@@ -14,6 +14,7 @@ export const useWorkspaceStore = create((set, get) => ({
   isInviting: false,
   isManagingBoardTeam: false,
   isMakingDecision: false,
+  isUpdatingBoardDetails: false,
   boards: [],
   currentBoard: null,
   targetEntity: {
@@ -52,6 +53,11 @@ export const useWorkspaceStore = create((set, get) => ({
   toggleDecisionModal: () => {
     const currentState = get().isMakingDecision;
     set({ isMakingDecision: !currentState });
+  },
+
+  toggleBoardUpdationModal: () => {
+    const currentState = get().isUpdatingBoardDetails;
+    set({ isUpdatingBoardDetails: !currentState });
   },
 
   setCurrentBoard: (board) => set({ currentBoard: board }),
@@ -132,6 +138,33 @@ export const useWorkspaceStore = create((set, get) => ({
       toast.error(message);
     } finally {
       set({ isLoading: false, isCreatingNewBoard: false });
+    }
+  },
+
+  updateBoard: async (data) => {
+    try {
+      const res = await axiosInstance.put(
+        `/boards/${get().currentBoard._id}`,
+        data,
+      );
+
+      set((state) => ({
+        boards: state.boards.map((board) =>
+          board._id === get().currentBoard._id ? { ...board, ...data } : board,
+        ),
+      }));
+
+      get().toggleBoardUpdationModal();
+
+      toast.success(res.data.message);
+    } catch (error) {
+      const backend = error?.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
+
+      toast.error(message);
     }
   },
 

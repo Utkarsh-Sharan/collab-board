@@ -4,6 +4,7 @@ import BoardTeamModal from "../modals/BoardTeamModal.jsx";
 import CreateNewBoardModal from "../modals/CreateNewBoardModal.jsx";
 import DecisionModal from "../modals/DecisionModal.jsx";
 import InviteMemberModal from "../modals/InviteMemberModal.jsx";
+import UpdateBoardDetailsModal from "../modals/UpdateBoardDetailsModal.jsx";
 import UserSettingsModal from "../modals/UserSettingsModal.jsx";
 
 function WorkspacePage() {
@@ -19,6 +20,7 @@ function WorkspacePage() {
       <InviteMemberModal />
       <BoardTeamModal />
       <DecisionModal />
+      <UpdateBoardDetailsModal />
     </>
   );
 }
