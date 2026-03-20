@@ -5,8 +5,12 @@ import {
 } from "../../../utils/constants.js";
 
 function BoardSettingsDropdown() {
-  const { currentBoard, setTargetEntity, toggleDecisionModal, toggleBoardUpdationModal } =
-    useWorkspaceStore();
+  const {
+    currentBoard,
+    setTargetEntity,
+    toggleDecisionModal,
+    toggleBoardUpdationModal,
+  } = useWorkspaceStore();
 
   const handleDelete = () => {
     setTargetEntity({

@@ -148,6 +148,12 @@ export const useWorkspaceStore = create((set, get) => ({
         data,
       );
 
+      set((state) => ({
+        boards: state.boards.map((board) =>
+          board._id === get().currentBoard._id ? { ...board, ...data } : board,
+        ),
+      }));
+
       get().toggleBoardUpdationModal();
 
       toast.success(res.data.message);
