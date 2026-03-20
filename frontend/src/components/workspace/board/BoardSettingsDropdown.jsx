@@ -1,20 +1,20 @@
 import { useWorkspaceStore } from "../../../store/useWorkspace.store.js";
-import { ActionDescriptionEnum, ActionsOnEntitiesEnum } from "../../../utils/constants.js";
+import {
+  ActionDescriptionEnum,
+  ActionsOnEntitiesEnum,
+} from "../../../utils/constants.js";
 
 function BoardSettingsDropdown() {
-  const {
-    currentBoard,
-    setTargetEntity,
-    toggleDecisionModal,
-  } = useWorkspaceStore();
+  const { currentBoard, setTargetEntity, toggleDecisionModal, toggleBoardUpdationModal } =
+    useWorkspaceStore();
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     setTargetEntity({
       entityId: currentBoard._id,
       actionDescription: ActionDescriptionEnum.DELETE_BOARD,
       action: ActionsOnEntitiesEnum.DELETE_BOARD,
     });
-    
+
     toggleDecisionModal();
   };
 
@@ -23,9 +23,16 @@ function BoardSettingsDropdown() {
       <article className="absolute z-10 shadow-lg right-0 top-10 w-40 border border-gray-200 bg-white rounded-lg text-left p-2">
         <button
           className="w-full rounded-md mt-3 py-1 hover:bg-gray-200"
-          //   onClick={toggleBoardTeamModal}  TODO: Create favourites feature
+          //   onClick={}  TODO: Create favourites feature
         >
           Mark as favourite
+        </button>
+
+        <button
+          className="w-full rounded-md mt-3 py-1 hover:bg-gray-200"
+          onClick={toggleBoardUpdationModal}
+        >
+          Update board
         </button>
 
         <button
