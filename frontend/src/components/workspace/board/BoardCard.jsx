@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import TeamDropdown from "../team/TeamDropdown";
 import BoardSettingsDropdown from "./BoardSettingsDropdown";
+import { useNavigate } from "react-router-dom";
 
 function BoardCard({
   board,
@@ -14,6 +15,12 @@ function BoardCard({
   toggleTeamDropdown,
   toggleSettingsDropdown,
 }) {
+  const navigate = useNavigate();
+
+  const goToLists = () => {
+    navigate("/workspace/lists");
+  };
+
   return (
     <article className="flex flex-col justify-between items-start gap-5 border border-orange-200 rounded-2xl bg-white p-5">
       <div className="w-full">
@@ -46,7 +53,10 @@ function BoardCard({
 
         {isTeamDropdownActive && <TeamDropdown />}
 
-        <button className="rounded-md bg-teal-400 px-2 py-1 text-white">
+        <button
+          className="rounded-md bg-teal-400 px-2 py-1 text-white"
+          onClick={goToLists}
+        >
           View Board
         </button>
       </div>
