@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import ListCard from "./ListCard";
 
 function List() {
   return (
@@ -12,7 +13,11 @@ function List() {
       </article>
 
       <section className="w-full mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        <h1>Hello</h1>
+        <ListCard />
+        <ListCard />
+        <ListCard />
+        <ListCard />
+        <ListCard />
       </section>
     </section>
   );
