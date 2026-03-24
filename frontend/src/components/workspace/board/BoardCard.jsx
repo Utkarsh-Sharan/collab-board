@@ -18,7 +18,7 @@ function BoardCard({
   const navigate = useNavigate();
 
   const goToLists = () => {
-    navigate("/workspace/lists");
+    navigate(`/workspace/${board._id}/lists`);
   };
 
   return (

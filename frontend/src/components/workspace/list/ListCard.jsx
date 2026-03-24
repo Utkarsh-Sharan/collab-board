@@ -1,11 +1,11 @@
 import { PenBox, Plus, Trash2 } from "lucide-react";
 
-function ListCard() {
+function ListCard({title}) {
   return (
     <article className="flex flex-col gap-5 bg-teal-200 rounded-md px-2 py-4">
       <div className="flex justify-between items-center">
         <div className="flex justify-start items-center gap-2">
-          <p className="font-medium">&lt;list-title&gt;</p>
+          <p className="font-medium">{title}</p>
           <p className="text-teal-500 bg-white/60 rounded-full text-center px-2">
             1
           </p>

@@ -17,7 +17,7 @@ function Workspace() {
 
         <Routes>
           <Route index element={<Board />} />
-          <Route path="lists" element={<List />} />
+          <Route path=":boardId/lists" element={<List />} />
         </Routes>
       </section>
     </section>
