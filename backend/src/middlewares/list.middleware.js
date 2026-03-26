@@ -5,7 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const verifyActiveList = asyncHandler(async (req, res, next) => {
   const board = req.board;
-  const listId = req.params.listId;
+  const listId = req.body.listId;
 
   if (!mongoose.Types.ObjectId.isValid(listId))
     throw new ApiError(400, "Invalid list ID!");

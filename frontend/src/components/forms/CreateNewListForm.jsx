@@ -9,7 +9,7 @@ function CreateNewListForm() {
   });
   const { boardId } = useParams();
 
-  const { isLoading, createList } = useListStore();
+  const { isLoading, createList, toggleNewListCreationModal } = useListStore();
 
   const handleChange = (e) => {
     setNewListFormData((prev) => ({
@@ -23,6 +23,8 @@ function CreateNewListForm() {
     setNewListFormData({
       title: "",
     });
+
+    toggleNewListCreationModal();
   };
 
   return (
@@ -30,7 +32,7 @@ function CreateNewListForm() {
       <div className="mt-10">
         <h1 className="text-3xl">Create A List</h1>
         <p className="text-orange-400 text-lg">
-          Create with clarity, collaborate with confidence.
+          Organize with ease, achieve with focus.
         </p>
       </div>
 

@@ -23,7 +23,7 @@ export const useListStore = create((set, get) => ({
 
     try {
       const res = await axiosInstance.get(`/boards/${boardId}/lists`);
-      console.log(res);
+      
       set({ lists: res.data.data.lists });
     } catch (error) {
       const backend = error?.response?.data;

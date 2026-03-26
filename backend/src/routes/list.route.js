@@ -38,7 +38,7 @@ router
   .route("/:boardId/lists")
   .get(verifyUserAndBoard, verifyRole("viewList"), getAllLists);
 router
-  .route("/:boardId/lists/:listId")
+  .route("/:boardId/lists/")
   .put(
     verifyUserAndBoard,
     verifyRole("updateList"),
@@ -48,7 +48,7 @@ router
     updateList,
   );
 router
-  .route("/:boardId/lists/:listId")
+  .route("/:boardId/lists/")
   .delete(
     verifyUserAndBoard,
     verifyRole("deleteList"),
