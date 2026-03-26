@@ -3,25 +3,28 @@ import { useState } from "react";
 import { axiosInstance } from "../../../lib/axios.js";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useWorkspaceStore } from "../../../store/useWorkspace.store.js";
+import {
+  ActionDescriptionEnum,
+  ActionsOnEntitiesEnum,
+} from "../../../utils/constants.js";
 
 function ListCard({ listId, title }) {
   const [newTitle, setNewTitle] = useState(title);
+  const [prevTitle, setPrevTitle] = useState(title);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const { boardId } = useParams();
 
-  const handleChange = (e) => {
-    setNewTitle(e.target.value);
-  };
+  const { setTargetEntity, toggleDecisionModal } = useWorkspaceStore();
 
-  const handleBlur = async () => {
-    setIsEditingTitle(false);
-
+  const updateListTitle = async () => {
     try {
       const res = await axiosInstance.put(`/boards/${boardId}/lists`, {
         listId: listId,
         title: newTitle,
       });
 
+      setPrevTitle(newTitle);
       toast.success(res.data.message);
     } catch (error) {
       const backend = error?.response?.data;
@@ -32,6 +35,27 @@ function ListCard({ listId, title }) {
 
       toast.error(message);
     }
+  };
+
+  const deleteList = () => {
+    setTargetEntity({
+      entityId: {boardId: boardId, listId: listId},
+      actionDescription: ActionDescriptionEnum.DELETE_LIST,
+      action: ActionsOnEntitiesEnum.DELETE_LIST,
+    });
+
+    toggleDecisionModal();
+  };
+
+  const handleChange = (e) => {
+    setNewTitle(e.target.value);
+  };
+
+  const handleBlur = async () => {
+    setIsEditingTitle(false);
+
+    if (newTitle === prevTitle) return;
+    updateListTitle();
   };
 
   return (
@@ -63,7 +87,7 @@ function ListCard({ listId, title }) {
               size={25}
             />
           </button>
-          <button>
+          <button onClick={deleteList}>
             <Trash2
               className="text-red-300 bg-white/60 p-1 rounded-md"
               size={25}

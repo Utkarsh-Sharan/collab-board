@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useListStore } from "../../../store/useList.store";
 import CreateNewListModal from "../../../modals/CreateNewListModal";
+import DecisionModal from "../../../modals/DecisionModal";
 
 function List() {
   const { boardId } = useParams();
@@ -17,7 +18,6 @@ function List() {
 
   return (
     <>
-      <CreateNewListModal />
       <section className="flex flex-col items-center">
         <article
           className="max-w-md flex flex-col sm:flex-row justify-center items-center text-center gap-5 border border-dashed border-teal-400 rounded-2xl bg-white/50 p-5 cursor-pointer hover:bg-white"
@@ -42,6 +42,9 @@ function List() {
           </div>
         )}
       </section>
+      
+      <CreateNewListModal />
+      <DecisionModal />
     </>
   );
 }

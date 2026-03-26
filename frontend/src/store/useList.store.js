@@ -58,4 +58,22 @@ export const useListStore = create((set, get) => ({
       set({ isLoading: false });
     }
   },
+
+  deleteList: async (boardId, data) => {
+    try {
+      const res = await axiosInstance.delete(`/boards/${boardId}/lists`, {data});
+
+      get().reRenderList();
+
+      toast.success(res.data.message);
+    } catch (error) {
+      const backend = error?.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
+
+      toast.error(message);
+    }
+  }
 }));
