@@ -22,7 +22,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/workspace" />} />
         <Route
-          path="/workspace"
+          path="/workspace/*"
           element={authUser ? <WorkspacePage /> : <Navigate to={"/login"} />}
         />
         <Route

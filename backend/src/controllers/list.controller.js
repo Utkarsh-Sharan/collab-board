@@ -50,7 +50,7 @@ const updateList = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, { list }, "List updated successfully!"));
+    .json(new ApiResponse(200, {}, "List title updated successfully!"));
 });
 
 const deleteList = asyncHandler(async (req, res) => {

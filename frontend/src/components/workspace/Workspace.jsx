@@ -1,5 +1,7 @@
 import Board from "./board/Board.jsx";
 import Header from "./Header.jsx";
+import { Navigate, Route, Routes } from "react-router-dom";
+import List from "./list/List.jsx";
 
 function Workspace() {
   return (
@@ -13,7 +15,10 @@ function Workspace() {
           </h5>
         </header>
 
-        <Board />
+        <Routes>
+          <Route index element={<Board />} />
+          <Route path=":boardId/lists" element={<List />} />
+        </Routes>
       </section>
     </section>
   );

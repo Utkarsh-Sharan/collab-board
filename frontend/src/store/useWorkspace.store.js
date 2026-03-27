@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { ActionsOnEntitiesEnum } from "../utils/constants.js";
+import { useListStore } from "./useList.store.js";
 
 export const useWorkspaceStore = create((set, get) => ({
   isUserSettingsVisible: false,
@@ -96,6 +97,13 @@ export const useWorkspaceStore = create((set, get) => ({
       case ActionsOnEntitiesEnum.DELETE_BOARD:
         get().deleteBoard();
         break;
+      
+      case ActionsOnEntitiesEnum.DELETE_LIST: {
+        const data = { listId: get().targetEntity.entityId.listId };
+        const boardId = get().targetEntity.entityId.boardId;
+        useListStore.getState().deleteList(boardId, data);
+        break;
+      }
     }
   },
 
