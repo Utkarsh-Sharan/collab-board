@@ -8,6 +8,7 @@ import {
   ActionDescriptionEnum,
   ActionsOnEntitiesEnum,
 } from "../../../utils/constants.js";
+import TaskCard from "../task/TaskCard.jsx";
 
 function ListCard({ listId, title }) {
   const [newTitle, setNewTitle] = useState(title);
@@ -60,7 +61,7 @@ function ListCard({ listId, title }) {
 
   return (
     <article className="flex flex-col gap-5 bg-teal-200 rounded-md px-2 py-4">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center px-2">
         <div className="flex justify-start items-center gap-2">
           {isEditingTitle ? (
             <input
@@ -96,7 +97,10 @@ function ListCard({ listId, title }) {
         </div>
       </div>
 
-      {/* Add tasks here */}
+      <div className="flex flex-col gap-3">
+        <p className="text-gray-400 px-2 text-lg">No tasks created yet...</p>
+        <TaskCard />
+      </div>
 
       <button className="w-1/2 flex justify-start items-center gap-1 text-teal-700 cursor-pointer">
         <Plus size={20} />
