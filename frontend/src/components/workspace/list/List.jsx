@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { axiosInstance } from "../../../lib/axios";
 import { useWorkspaceStore } from "../../../store/useWorkspace.store";
 import TeamDropdown from "../team/TeamDropdown";
+import CreateNewTaskModal from "../../../modals/CreateNewTaskModal";
 
 function List() {
   const { boardId } = useParams();
@@ -107,6 +108,7 @@ function List() {
       </section>
 
       <CreateNewListModal />
+      <CreateNewTaskModal />
       <DecisionModal />
     </>
   );

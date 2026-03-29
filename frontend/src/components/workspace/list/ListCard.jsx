@@ -9,6 +9,7 @@ import {
   ActionsOnEntitiesEnum,
 } from "../../../utils/constants.js";
 import TaskCard from "../task/TaskCard.jsx";
+import { useListStore } from "../../../store/useList.store.js";
 
 function ListCard({ listId, title }) {
   const [newTitle, setNewTitle] = useState(title);
@@ -17,6 +18,7 @@ function ListCard({ listId, title }) {
   const { boardId } = useParams();
 
   const { setTargetEntity, toggleDecisionModal } = useWorkspaceStore();
+  const { setCurrentList, toggleNewTaskCreationModal } = useListStore();
 
   const updateListTitle = async () => {
     try {
@@ -40,7 +42,7 @@ function ListCard({ listId, title }) {
 
   const deleteList = () => {
     setTargetEntity({
-      entityId: {boardId: boardId, listId: listId},
+      entityId: { boardId: boardId, listId: listId },
       actionDescription: ActionDescriptionEnum.DELETE_LIST,
       action: ActionsOnEntitiesEnum.DELETE_LIST,
     });
@@ -57,6 +59,11 @@ function ListCard({ listId, title }) {
 
     if (newTitle === prevTitle) return;
     updateListTitle();
+  };
+
+  const handleClick = () => {
+    setCurrentList(listId);
+    toggleNewTaskCreationModal();
   };
 
   return (
@@ -98,14 +105,16 @@ function ListCard({ listId, title }) {
       </div>
 
       <div className="flex flex-col gap-3">
-        <p className="text-gray-400 px-2 text-lg">No tasks created yet...</p>
+        <p className="text-gray-400 px-2 text-lg">No tasks added yet...</p>
         <TaskCard />
       </div>
 
       <button className="w-1/2 flex justify-start items-center gap-1 text-teal-700 cursor-pointer">
         <Plus size={20} />
 
-        <p className="text-base">Add a task</p>
+        <p className="text-base" onClick={handleClick}>
+          Add a task
+        </p>
       </button>
     </article>
   );

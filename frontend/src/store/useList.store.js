@@ -3,10 +3,16 @@ import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 
 export const useListStore = create((set, get) => ({
+  currentList: null,
   lists: [],
   renderList: false,
   isCreatingNewList: false,
+  isCreatingNewTask: false,
   isLoading: false,
+
+  setCurrentList: (listId) => {
+    set({ currentList: listId });
+  },
 
   reRenderList: () => {
     const currentState = get().renderList;
@@ -18,12 +24,17 @@ export const useListStore = create((set, get) => ({
     set({ isCreatingNewList: !currentState });
   },
 
+  toggleNewTaskCreationModal: () => {
+    const currentState = get().isCreatingNewTask;
+    set({ isCreatingNewTask: !currentState });
+  },
+
   getAllLists: async (boardId) => {
     set({ isLoading: true });
 
     try {
       const res = await axiosInstance.get(`/boards/${boardId}/lists`);
-      
+
       set({ lists: res.data.data.lists });
     } catch (error) {
       const backend = error?.response?.data;
@@ -61,7 +72,9 @@ export const useListStore = create((set, get) => ({
 
   deleteList: async (boardId, data) => {
     try {
-      const res = await axiosInstance.delete(`/boards/${boardId}/lists`, {data});
+      const res = await axiosInstance.delete(`/boards/${boardId}/lists`, {
+        data,
+      });
 
       get().reRenderList();
 
@@ -75,5 +88,5 @@ export const useListStore = create((set, get) => ({
 
       toast.error(message);
     }
-  }
+  },
 }));

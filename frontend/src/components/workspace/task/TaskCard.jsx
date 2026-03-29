@@ -3,7 +3,7 @@ import React from "react";
 function TaskCard() {
   return (
     <article className="flex flex-col gap-2 items-start justify-center bg-white shadow-md rounded-md p-3 cursor-pointer hover:bg-white/70">
-      <div className="border border-orange-400 bg-orange-200 text-orange-400 rounded-md font-semibold uppercase text-sm px-1">
+      <div className="border border-orange-400 bg-orange-200 text-orange-400 rounded-md font-semibold uppercase text-xs px-1">
         Urgent
       </div>
 
@@ -19,7 +19,7 @@ function TaskCard() {
             className="absolute -z-10 right-4 top-0 w-6 h-6 rounded-full"
           />
 
-          <div className="w-6 h-6 rounded-full bg-gray-300 text-center">
+          <div className="w-6 h-6 rounded-full bg-gray-200 text-center text-sm">
             9+
           </div>
         </div>
