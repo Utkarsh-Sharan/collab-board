@@ -1,35 +1,39 @@
 import { X } from "lucide-react";
 import { useState } from "react";
+import { useWorkspaceStore } from "../../../store/useWorkspace.store.js";
 
-const members = [
-  { id: 1, name: "Utkarsh" },
-  { id: 2, name: "Alex" },
-  { id: 3, name: "Sam" },
-  { id: 4, name: "Priya" },
-];
-
-function AssignUsersDropdown() {
+function AssignUsersDropdown({ onAssign }) {
   const [query, setQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [assignees, setAssignees] = useState([]);
 
+  const { currentBoard } = useWorkspaceStore();
+
+  const members = currentBoard.members;
+
   const filteredMembers = members.filter(
     (m) =>
-      m.name.toLowerCase().includes(query.toLowerCase()) &&
-      !assignees.some((a) => a.id === m.id),
+      m.fullName.toLowerCase().includes(query.toLowerCase()) &&
+      !assignees.some((a) => a._id === m._id),
   );
 
   const handleSelect = (member) => {
     const newAssignees = [...assignees, member];
+    const newAssigneeIds = newAssignees.map(user => user.userId);
+
     setAssignees(newAssignees);
+    onAssign(newAssigneeIds);
 
     setQuery("");
     setShowDropdown(false);
   };
 
   const removeAssignee = (id) => {
-    const newAssignees = assignees.filter((m) => m.id !== id);
-    setAssignees(newAssignees);
+    const updatedAssignees = assignees.filter((m) => m._id !== id);
+    const updatedAssigneeIds = updatedAssignees.map((user) => user.userId);
+
+    setAssignees(updatedAssignees);
+    onAssign(updatedAssigneeIds);
   };
 
   return (
@@ -37,14 +41,11 @@ function AssignUsersDropdown() {
       <div className="flex flex-wrap gap-2 mb-2">
         {assignees.map((a) => (
           <span
-            key={a.id}
+            key={a._id}
             className="flex items-center bg-teal-300 text-teal-800 px-2 py-1 rounded-full text-sm"
           >
-            {a.name}
-            <button
-              onClick={() => removeAssignee(a.id)}
-              className="ml-1"
-            >
+            {a.fullName}
+            <button onClick={() => removeAssignee(a._id)} className="ml-1">
               <X size={17} />
             </button>
           </span>
@@ -71,11 +72,23 @@ function AssignUsersDropdown() {
         <ul className="absolute z-10 w-full bg-white border rounded mt-1 max-h-20 overflow-y-auto">
           {filteredMembers.map((member) => (
             <li
-              key={member.id}
+              key={member._id}
               onClick={() => handleSelect(member)}
               className="px-3 py-2 cursor-pointer hover:bg-teal-100"
             >
-              {member.name}
+              <div className="flex justify-between items-center">
+                <div className="flex justify-start items-center gap-3">
+                  <img
+                    src={member.avatar}
+                    alt="user-profile"
+                    className="w-10 rounded-full"
+                  />
+
+                  <p>{member.fullName}</p>
+                </div>
+
+                <p>{member.role}</p>
+              </div>
             </li>
           ))}
         </ul>

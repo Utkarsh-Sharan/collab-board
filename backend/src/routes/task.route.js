@@ -30,7 +30,7 @@ const verifyActiveListAndActiveTask = [verifyActiveList, verifyActiveTask];
 const verifyActiveListAndDeletedTask = [verifyActiveList, verifyDeletedTask];
 
 router
-  .route("/:boardId/lists/:listId/tasks")
+  .route("/:boardId/lists/tasks")
   .post(
     verifyUserAndBoard,
     verifyRole("createTask"),

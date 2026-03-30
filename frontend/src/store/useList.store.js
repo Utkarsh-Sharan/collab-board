@@ -89,4 +89,23 @@ export const useListStore = create((set, get) => ({
       toast.error(message);
     }
   },
+
+  createTask: async (boardId, data) => {
+    console.log(boardId, data);
+    try {
+      const res = await axiosInstance.post(`boards/${boardId}/lists/tasks`, data);
+      console.log(res);
+
+      get().toggleNewTaskCreationModal();
+      toast.success(res.data.message);
+    } catch (error) {
+      const backend = error?.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
+
+      toast.error(message);
+    }
+  }
 }));

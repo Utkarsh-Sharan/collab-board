@@ -1,32 +1,40 @@
 import { X } from "lucide-react";
 import { useState } from "react";
 
-function AssignLabels() {
+function AssignLabels({ onAssign }) {
   const maxLabels = 3;
 
   const [labels, setLabels] = useState([]);
   const [label, setLabel] = useState("");
-
-  const removeLabel = (id) => {
-    setLabels((prev) => prev.filter((label) => label.id !== id));
-  };
-
+  
   const handleLabelSubmit = () => {
     if (!label.trim() || labels.length === maxLabels) return;
-
+    
     const newLabel = {
       id: Date.now(),
       name: label.trim(),
     };
-
-    setLabels((prev) => [...prev, newLabel]);
+    
+    const newLabels = [...labels, newLabel]
+    const labelNames = newLabels.map((label) => label.name);
+    
+    setLabels(newLabels);
+    onAssign(labelNames);
+    
     setLabel("");
   };
-
+  
+  const removeLabel = (id) => {
+    const updatedLabels = labels.filter((label) => label.id !== id);
+    const labelNames = updatedLabels.map((label) => label.name);
+    
+    setLabels(updatedLabels);
+    onAssign(labelNames);
+  };
   return (
     <div className="relative w-full mb-5">
       <div className="flex flex-wrap gap-2 mb-2">
-        {labels.map((label) => (
+        {labels?.map((label) => (
           <span
             key={label.id}
             className="flex items-center bg-teal-300 text-teal-800 px-2 py-1 rounded-full text-sm uppercase"

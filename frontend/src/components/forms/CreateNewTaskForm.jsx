@@ -3,14 +3,27 @@ import { useState } from "react";
 import { useListStore } from "../../store/useList.store.js";
 import AssignUsersDropdown from "../workspace/task/AssignUsersDropdown.jsx";
 import AssignLabels from "../workspace/task/AssignLabels.jsx";
+import { useWorkspaceStore } from "../../store/useWorkspace.store.js";
 
 function CreateNewTaskForm() {
   const [newTaskFormData, setNewTaskFormData] = useState({
     title: "",
     description: "",
+    assignedTo: [],
+    dueDate: null,
+    labels: [],
   });
 
-  const { currentList, isLoading, createList, toggleNewListCreationModal } = useListStore();
+  const { currentList, isLoading, createTask } = useListStore();
+  const { currentBoard } = useWorkspaceStore();
+
+  const handleUserAssignment = (users) => {
+    setNewTaskFormData((prev) => ({ ...prev, assignedTo: users }));
+  };
+
+  const handleLabelAssignment = (labels) => {
+    setNewTaskFormData((prev) => ({ ...prev, labels: labels }));
+  };
 
   const handleChange = (e) => {
     setNewTaskFormData((prev) => ({
@@ -20,12 +33,16 @@ function CreateNewTaskForm() {
   };
 
   const handleSubmit = () => {
-    createList(currentList, newTaskFormData);
+    const data = { listId: currentList, ...newTaskFormData };
+
+    createTask(currentBoard._id, data);
     setNewTaskFormData({
       title: "",
+      description: "",
+      assignedTo: [],
+      dueDate: null,
+      labels: [],
     });
-
-    toggleNewListCreationModal();
   };
 
   return (
@@ -62,19 +79,20 @@ function CreateNewTaskForm() {
           onChange={handleChange}
         />
 
-        <AssignUsersDropdown />
+        <AssignUsersDropdown onAssign={handleUserAssignment} />
 
-        <label htmlFor="date" className="text-sm font-light block">
+        <label htmlFor="dueDate" className="text-sm font-light block">
           Due date
         </label>
         <input
           type="date"
-          name="date"
-          id="date"
+          name="dueDate"
+          id="dueDate"
+          onChange={handleChange}
           className="mb-5 w-full px-5 py-2 border border-orange-100 rounded-md"
         />
 
-        <AssignLabels />
+        <AssignLabels onAssign={handleLabelAssignment} />
 
         <button
           type="button"
