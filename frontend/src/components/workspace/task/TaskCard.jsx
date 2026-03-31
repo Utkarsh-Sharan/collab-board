@@ -1,16 +1,30 @@
 import React from "react";
 
-function TaskCard() {
+function TaskCard({ data }) {
+  const dueDate = new Date(data.dueDate).toLocaleDateString("en-GB");
+  const labels = data.labels.map((label, idx) => ({
+    id: `${label}-${idx}`,
+    value: label,
+  }))
+
   return (
     <article className="flex flex-col gap-2 items-start justify-center bg-white shadow-md rounded-md p-3 cursor-pointer hover:bg-white/70">
-      <div className="border border-orange-400 bg-orange-200 text-orange-400 rounded-md font-semibold uppercase text-xs px-1">
-        Urgent
+      <div className="flex gap-2">
+        {labels.length > 0 &&
+          labels.map((label) => (
+            <div
+              key={label.id}
+              className="border border-orange-400 bg-orange-200 text-orange-400 rounded-md font-semibold uppercase text-xs px-1"
+            >
+              {label.value}
+            </div>
+          ))}
       </div>
 
-      <p className="text-lg">This is an example title.</p>
+      <p className="text-lg">{data.title}</p>
 
-      <div className="w-full flex justify-between items-center">
-        <p>Deadline</p>
+      <div className="w-full flex justify-between items-center text-sm">
+        <p>Due: {dueDate}</p>
 
         <div className="relative z-30">
           <img

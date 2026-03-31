@@ -6,6 +6,7 @@ export const useListStore = create((set, get) => ({
   currentList: null,
   lists: [],
   renderList: false,
+  renderListCard: false,
   isCreatingNewList: false,
   isCreatingNewTask: false,
   isLoading: false,
@@ -17,6 +18,11 @@ export const useListStore = create((set, get) => ({
   reRenderList: () => {
     const currentState = get().renderList;
     set({ renderList: !currentState });
+  },
+
+  reRenderListCard: () => {
+    const currentState = get().renderListCard;
+    set({ renderListCard: !currentState });
   },
 
   toggleNewListCreationModal: () => {
@@ -91,12 +97,15 @@ export const useListStore = create((set, get) => ({
   },
 
   createTask: async (boardId, data) => {
-    console.log(boardId, data);
     try {
-      const res = await axiosInstance.post(`boards/${boardId}/lists/tasks`, data);
-      console.log(res);
+      const res = await axiosInstance.post(
+        `boards/${boardId}/lists/tasks`,
+        data,
+      );
 
       get().toggleNewTaskCreationModal();
+      get().reRenderListCard();
+
       toast.success(res.data.message);
     } catch (error) {
       const backend = error?.response?.data;
@@ -107,5 +116,5 @@ export const useListStore = create((set, get) => ({
 
       toast.error(message);
     }
-  }
+  },
 }));

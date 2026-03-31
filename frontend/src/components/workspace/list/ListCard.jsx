@@ -10,15 +10,18 @@ import {
 } from "../../../utils/constants.js";
 import TaskCard from "../task/TaskCard.jsx";
 import { useListStore } from "../../../store/useList.store.js";
+import { useEffect } from "react";
 
 function ListCard({ listId, title }) {
   const [newTitle, setNewTitle] = useState(title);
   const [prevTitle, setPrevTitle] = useState(title);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [tasks, setTasks] = useState([]);
   const { boardId } = useParams();
 
   const { setTargetEntity, toggleDecisionModal } = useWorkspaceStore();
-  const { setCurrentList, toggleNewTaskCreationModal } = useListStore();
+  const { setCurrentList, toggleNewTaskCreationModal, renderListCard } =
+    useListStore();
 
   const updateListTitle = async () => {
     try {
@@ -66,6 +69,31 @@ function ListCard({ listId, title }) {
     toggleNewTaskCreationModal();
   };
 
+  useEffect(() => {
+    const onLoadHandler = async () => {
+      const data = { listId: listId };
+
+      try {
+        const res = await axiosInstance.post(
+          `/boards/${boardId}/lists/tasks/all`,
+          data,
+        );
+
+        setTasks(res.data.data.tasks);
+      } catch (error) {
+        const backend = error?.response?.data;
+        const message =
+          (backend?.errors && Object.values(backend.errors)[0]) ||
+          backend?.message ||
+          "Something went wrong!";
+
+        toast.error(message);
+      }
+    };
+
+    onLoadHandler();
+  }, [renderListCard]);
+
   return (
     <article className="flex flex-col gap-5 bg-teal-200 rounded-md px-2 py-4">
       <div className="flex justify-between items-center px-2">
@@ -105,8 +133,11 @@ function ListCard({ listId, title }) {
       </div>
 
       <div className="flex flex-col gap-3">
-        <p className="text-gray-400 px-2 text-lg">No tasks added yet...</p>
-        <TaskCard />
+        {tasks?.length > 0 ? (
+          tasks?.map((task) => <TaskCard key={task._id} data={task} />)
+        ) : (
+          <p className="text-gray-400 px-2 text-lg">No tasks added yet...</p>
+        )}
       </div>
 
       <button className="w-1/2 flex justify-start items-center gap-1 text-teal-700 cursor-pointer">

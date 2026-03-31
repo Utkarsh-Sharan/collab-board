@@ -40,8 +40,8 @@ router
     createTask,
   );
 router
-  .route("/:boardId/lists/:listId/tasks")
-  .get(
+  .route("/:boardId/lists/tasks/all")
+  .post(
     verifyUserAndBoard,
     verifyRole("viewTask"),
     verifyActiveList,
