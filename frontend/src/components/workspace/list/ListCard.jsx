@@ -112,7 +112,7 @@ function ListCard({ listId, title }) {
           )}
 
           <p className="text-teal-500 bg-white/60 rounded-full text-center px-2">
-            1
+            {tasks.length}
           </p>
         </div>
 
@@ -134,7 +134,7 @@ function ListCard({ listId, title }) {
 
       <div className="flex flex-col gap-3">
         {tasks?.length > 0 ? (
-          tasks?.map((task) => <TaskCard key={task._id} data={task} />)
+          tasks?.map((task) => <TaskCard key={task._id} data={task} listTitle={title} />)
         ) : (
           <p className="text-gray-400 px-2 text-lg">No tasks added yet...</p>
         )}

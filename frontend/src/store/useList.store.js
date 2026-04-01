@@ -3,16 +3,27 @@ import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 
 export const useListStore = create((set, get) => ({
+  currentListTitle: "",
   currentList: null,
+  currentTask: null,
   lists: [],
   renderList: false,
   renderListCard: false,
   isCreatingNewList: false,
   isCreatingNewTask: false,
   isLoading: false,
+  toggleTaskDetails: false,
+
+  setCurrentListTitle: (title) => {
+    set({ currentListTitle: title });
+  },
 
   setCurrentList: (listId) => {
     set({ currentList: listId });
+  },
+
+  setCurrentTask: (task) => {
+    set({ currentTask: task });
   },
 
   reRenderList: () => {
@@ -33,6 +44,11 @@ export const useListStore = create((set, get) => ({
   toggleNewTaskCreationModal: () => {
     const currentState = get().isCreatingNewTask;
     set({ isCreatingNewTask: !currentState });
+  },
+
+  toggleTaskDetailsModal: () => {
+    const currentState = get().toggleTaskDetails;
+    set({ toggleTaskDetails: !currentState });
   },
 
   getAllLists: async (boardId) => {

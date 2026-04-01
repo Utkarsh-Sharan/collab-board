@@ -1,20 +1,34 @@
 import React from "react";
+import { useListStore } from "../../../store/useList.store.js";
 
-function TaskCard({ data }) {
+function TaskCard({ data, listTitle }) {
+  const { setCurrentTask, setCurrentListTitle, toggleTaskDetailsModal } =
+    useListStore();
+
   const dueDate = new Date(data.dueDate).toLocaleDateString("en-GB");
   const labels = data.labels.map((label, idx) => ({
     id: `${label}-${idx}`,
     value: label,
-  }))
+  }));
+
+  const handleClick = () => {
+    setCurrentListTitle(listTitle);
+    setCurrentTask(data);
+    
+    toggleTaskDetailsModal();
+  };
 
   return (
-    <article className="flex flex-col gap-2 items-start justify-center bg-white shadow-md rounded-md p-3 cursor-pointer hover:bg-white/70">
+    <article
+      className="flex flex-col gap-2 items-start justify-center bg-white shadow-md rounded-md p-3 cursor-pointer hover:bg-white/70"
+      onClick={handleClick}
+    >
       <div className="flex gap-2">
         {labels.length > 0 &&
           labels.map((label) => (
             <div
               key={label.id}
-              className="border border-orange-400 bg-orange-200 text-orange-400 rounded-md font-semibold uppercase text-xs px-1"
+              className="border border-orange-400 bg-orange-200 text-orange-400 rounded-full font-semibold uppercase text-xs px-1"
             >
               {label.value}
             </div>
