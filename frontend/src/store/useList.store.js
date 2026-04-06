@@ -118,6 +118,7 @@ export const useListStore = create((set, get) => ({
         `boards/${boardId}/lists/tasks`,
         data,
       );
+      console.log(res.data);
 
       get().toggleNewTaskCreationModal();
       get().reRenderListCard();

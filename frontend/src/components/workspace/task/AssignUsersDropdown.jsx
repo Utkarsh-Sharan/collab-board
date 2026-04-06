@@ -19,10 +19,9 @@ function AssignUsersDropdown({ onAssign }) {
 
   const handleSelect = (member) => {
     const newAssignees = [...assignees, member];
-    const newAssigneeIds = newAssignees.map(user => user.userId);
 
     setAssignees(newAssignees);
-    onAssign(newAssigneeIds);
+    onAssign(newAssignees);
 
     setQuery("");
     setShowDropdown(false);
@@ -30,10 +29,9 @@ function AssignUsersDropdown({ onAssign }) {
 
   const removeAssignee = (id) => {
     const updatedAssignees = assignees.filter((m) => m._id !== id);
-    const updatedAssigneeIds = updatedAssignees.map((user) => user.userId);
 
     setAssignees(updatedAssignees);
-    onAssign(updatedAssigneeIds);
+    onAssign(updatedAssignees);
   };
 
   return (

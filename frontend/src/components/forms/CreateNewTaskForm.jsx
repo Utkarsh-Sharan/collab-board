@@ -17,8 +17,8 @@ function CreateNewTaskForm() {
   const { currentList, isLoading, createTask } = useListStore();
   const { currentBoard } = useWorkspaceStore();
 
-  const handleUserAssignment = (users) => {
-    setNewTaskFormData((prev) => ({ ...prev, assignedTo: users }));
+  const handleUserAssignment = (user) => {
+    setNewTaskFormData((prev) => ({ ...prev, assignedTo: user }));
   };
 
   const handleLabelAssignment = (labels) => {
