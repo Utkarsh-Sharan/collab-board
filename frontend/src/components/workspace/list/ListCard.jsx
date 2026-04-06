@@ -132,7 +132,7 @@ function ListCard({ listId, title }) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 max-h-80 overflow-y-auto">
         {tasks?.length > 0 ? (
           tasks?.map((task) => <TaskCard key={task._id} data={task} listTitle={title} />)
         ) : (

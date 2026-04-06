@@ -96,7 +96,7 @@ function List() {
         {isLoading ? (
           <Loader className="mt-5 animate-spin" />
         ) : lists?.length > 0 ? (
-          <section className="w-full mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <section className="w-full mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-start gap-4">
             {lists.map((list) => (
               <ListCard key={list._id} listId={list._id} title={list.title} />
             ))}
