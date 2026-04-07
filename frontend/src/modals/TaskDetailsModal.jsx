@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import TaskTitle from "./taskDetails/TaskTitle.jsx";
 import TaskDescription from "./taskDetails/TaskDescription.jsx";
 import TaskLabels from "./taskDetails/TaskLabels.jsx";
+import TaskAssignees from "./taskDetails/TaskAssignees.jsx";
 
 function TaskDetailsModal() {
   const {
@@ -28,7 +29,7 @@ function TaskDetailsModal() {
     title: currentTask?.title || "",
     description: currentTask?.description || "",
     labels: labels || [],
-    assignees: currentTask?.assignees || [],
+    assignees: currentTask?.assignedTo || [],
   });
 
   const updateField = (field, value) => {
@@ -50,7 +51,7 @@ function TaskDetailsModal() {
           title: currentTask.title,
           description: currentTask.description,
           labels: labels,
-          assignees: currentTask.assignees,
+          assignees: currentTask.assignedTo,
         });
       }
     };
@@ -61,7 +62,7 @@ function TaskDetailsModal() {
   if (!toggleTaskDetails) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <article className="fixed inset-0 z-50 flex items-center justify-center">
       <div
         className="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm"
         onClick={toggleTaskDetailsModal}
@@ -109,34 +110,13 @@ function TaskDetailsModal() {
           />
 
           {/* Assignees */}
-          {/* <div>
-            <div className="mb-3 flex justify-start items-center gap-2">
-              <p className="text-sm text-gray-400">ASSIGNEES</p>
-
-              <Edit
-                size={17}
-                className="text-teal-400 cursor-pointer text-sm"
-              />
-            </div>
-
-            <div className="relative z-30">
-              <img
-                src="/collab-board-icon.png"
-                alt="user-profile"
-                className="-z-10 w-8 h-8 rounded-full border border-white"
-              />
-
-              <img
-                src="/collab-board-icon.png"
-                alt="user-profile"
-                className="absolute top-0 left-6 z-10 w-8 h-8 rounded-full border border-white"
-              />
-
-              <div className="absolute top-0 left-12 z-20 w-8 h-8 rounded-full bg-gray-200 border border-white text-center text-lg">
-                9
-              </div>
-            </div>
-          </div> */}
+          <TaskAssignees data={{
+            isEditing: isEditing.taskAssignees,
+            assignees: details.assignees,
+            startEdit: startEdit,
+            endEdit: endEdit,
+            updateField: updateField,
+          }} />
 
           {/* Due date */}
           <div>
@@ -160,7 +140,7 @@ function TaskDetailsModal() {
           }}
         />
       </div>
-    </div>
+    </article>
   );
 }
 
