@@ -8,14 +8,20 @@ import {
   ActionDescriptionEnum,
   ActionsOnEntitiesEnum,
 } from "../../../utils/constants.js";
+import TaskCard from "../task/TaskCard.jsx";
+import { useListStore } from "../../../store/useList.store.js";
+import { useEffect } from "react";
 
 function ListCard({ listId, title }) {
   const [newTitle, setNewTitle] = useState(title);
   const [prevTitle, setPrevTitle] = useState(title);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [tasks, setTasks] = useState([]);
   const { boardId } = useParams();
 
   const { setTargetEntity, toggleDecisionModal } = useWorkspaceStore();
+  const { setCurrentList, toggleNewTaskCreationModal, renderListCard } =
+    useListStore();
 
   const updateListTitle = async () => {
     try {
@@ -39,7 +45,7 @@ function ListCard({ listId, title }) {
 
   const deleteList = () => {
     setTargetEntity({
-      entityId: {boardId: boardId, listId: listId},
+      entityId: { boardId: boardId, listId: listId },
       actionDescription: ActionDescriptionEnum.DELETE_LIST,
       action: ActionsOnEntitiesEnum.DELETE_LIST,
     });
@@ -58,9 +64,39 @@ function ListCard({ listId, title }) {
     updateListTitle();
   };
 
+  const handleClick = () => {
+    setCurrentList(listId);
+    toggleNewTaskCreationModal();
+  };
+
+  useEffect(() => {
+    const onLoadHandler = async () => {
+      const data = { listId: listId };
+
+      try {
+        const res = await axiosInstance.post(
+          `/boards/${boardId}/lists/tasks/all`,
+          data,
+        );
+
+        setTasks(res.data.data.tasks);
+      } catch (error) {
+        const backend = error?.response?.data;
+        const message =
+          (backend?.errors && Object.values(backend.errors)[0]) ||
+          backend?.message ||
+          "Something went wrong!";
+
+        toast.error(message);
+      }
+    };
+
+    onLoadHandler();
+  }, [renderListCard]);
+
   return (
     <article className="flex flex-col gap-5 bg-teal-200 rounded-md px-2 py-4">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center px-2">
         <div className="flex justify-start items-center gap-2">
           {isEditingTitle ? (
             <input
@@ -76,7 +112,7 @@ function ListCard({ listId, title }) {
           )}
 
           <p className="text-teal-500 bg-white/60 rounded-full text-center px-2">
-            1
+            {tasks.length}
           </p>
         </div>
 
@@ -96,12 +132,20 @@ function ListCard({ listId, title }) {
         </div>
       </div>
 
-      {/* Add tasks here */}
+      <div className="flex flex-col gap-3 max-h-80 overflow-y-auto">
+        {tasks?.length > 0 ? (
+          tasks?.map((task) => <TaskCard key={task._id} data={task} listTitle={title} />)
+        ) : (
+          <p className="text-gray-400 px-2 text-lg">No tasks added yet...</p>
+        )}
+      </div>
 
       <button className="w-1/2 flex justify-start items-center gap-1 text-teal-700 cursor-pointer">
         <Plus size={20} />
 
-        <p className="text-base">Add a task</p>
+        <p className="text-base" onClick={handleClick}>
+          Add a task
+        </p>
       </button>
     </article>
   );

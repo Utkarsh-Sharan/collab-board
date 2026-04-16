@@ -19,9 +19,20 @@ const taskSchema = new Schema(
     },
     assignedTo: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        fullName: {
+          type: String,
+        },
+        role: {
+          type: String,
+        },
+        avatar: {
+          type: String,
+        },
       },
     ],
     dueDate: {
