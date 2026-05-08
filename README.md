@@ -150,25 +150,6 @@ All models include timestamps for audit tracking.
 
 ---
 
-## 📂 Project Structure
-
-CollabBoard/
-├── frontend/
-│ ├── components/
-│ ├── pages/
-│ ├── store/
-│ ├── modals/
-│ └── utils/
-│
-├── backend/
-│ ├── controllers/
-│ ├── models/
-│ ├── routes/
-│ ├── middlewares/
-│ ├── services/
-│ ├── validators/
-│ └── config/
-
 ## 📈 Future Improvements
 
 - Drag-and-drop UI for task movement
