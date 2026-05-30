@@ -62,7 +62,7 @@ CollabBoard is a collaborative Kanban-based project management application that 
 - React (functional components)
 - Zustand for state management
 - Axios for API communication
-- Material UI + Tailwind CSS for styling
+- Tailwind CSS for styling
 
 ---
 
