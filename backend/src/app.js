@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 
 dotenv.config({
-  path: "./.env"
+  path: "./.env",
 });
 
 const app = express();

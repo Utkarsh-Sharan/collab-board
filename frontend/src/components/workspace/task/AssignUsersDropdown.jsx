@@ -10,6 +10,7 @@ function AssignUsersDropdown({ onAssign }) {
   const { currentBoard } = useWorkspaceStore();
 
   const members = currentBoard.members;
+  console.log(members);
 
   const filteredMembers = members.filter(
     (m) =>
@@ -21,7 +22,7 @@ function AssignUsersDropdown({ onAssign }) {
     const newAssignees = [...assignees, member];
 
     setAssignees(newAssignees);
-    onAssign(newAssignees);
+    // onAssign(newAssignees);
 
     setQuery("");
     setShowDropdown(false);
@@ -31,7 +32,7 @@ function AssignUsersDropdown({ onAssign }) {
     const updatedAssignees = assignees.filter((m) => m._id !== id);
 
     setAssignees(updatedAssignees);
-    onAssign(updatedAssignees);
+    // onAssign(updatedAssignees);
   };
 
   return (
