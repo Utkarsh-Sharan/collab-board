@@ -5,6 +5,8 @@ import TaskTitle from "./taskDetails/TaskTitle.jsx";
 import TaskDescription from "./taskDetails/TaskDescription.jsx";
 import TaskLabels from "./taskDetails/TaskLabels.jsx";
 import TaskAssignees from "./taskDetails/TaskAssignees.jsx";
+import { useAuthStore } from "../store/useAuth.store.js";
+import { useWorkspaceStore } from "../store/useWorkspace.store.js";
 
 function TaskDetailsModal() {
   const {
@@ -13,7 +15,7 @@ function TaskDetailsModal() {
     currentListTitle,
     currentTask,
   } = useListStore();
-
+  
   const dueDate = new Date(currentTask?.dueDate).toLocaleDateString("en-GB");
   const labels = currentTask?.labels?.map((label, idx) => ({
     id: `${label}-${idx}`,

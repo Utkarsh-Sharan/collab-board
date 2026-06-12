@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 
 function EditAssigneesModal({ data }) {
   const [localAssignees, setLocalAssignees] = useState(data?.assignees);
+  const [assignees, setAssignees] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     const onLoadHandler = async () => {
@@ -14,12 +16,21 @@ function EditAssigneesModal({ data }) {
     onLoadHandler();
   }, [data.isEditing, data.assignees]);
 
+  const handleSelect = (member) => {
+    const newAssignees = [...assignees, member];
+
+    setAssignees(newAssignees);
+    // onAssign(newAssignees);
+
+    setShowDropdown(false);
+  };
+
   const addAssignee = (assignee) => {
     setLocalAssignees((prev) => [...prev, assignee]);
   };
 
   const removeAssignee = (id) => {
-    if(localAssignees.length === 1) {
+    if (localAssignees.length === 1) {
       toast.error("Cannot remove last assignee!");
       return;
     }
@@ -87,7 +98,25 @@ function EditAssigneesModal({ data }) {
           ))}
         </div>
 
-        <AssignUsersDropdown onAssign={addAssignee} />
+        <div className="flex flex-wrap gap-2 mb-2">
+          {assignees.map((a) => (
+            <span
+              key={a._id}
+              className="flex items-center bg-teal-300 text-teal-800 px-2 py-1 rounded-full text-sm"
+            >
+              {a.fullName}
+              <button onClick={() => removeAssignee(a._id)} className="ml-1">
+                <X size={17} />
+              </button>
+            </span>
+          ))}
+        </div>
+
+        <AssignUsersDropdown 
+          handleSelect={handleSelect} 
+          showDropdown={showDropdown}
+          setShowDropdown={setShowDropdown}
+        />
 
         <button
           className="w-full bg-orange-400 font-semibold rounded-md py-2 mt-5"
