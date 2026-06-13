@@ -5,6 +5,8 @@ import TaskTitle from "./taskDetails/TaskTitle.jsx";
 import TaskDescription from "./taskDetails/TaskDescription.jsx";
 import TaskLabels from "./taskDetails/TaskLabels.jsx";
 import TaskAssignees from "./taskDetails/TaskAssignees.jsx";
+import { useAuthStore } from "../store/useAuth.store.js";
+import { useWorkspaceStore } from "../store/useWorkspace.store.js";
 
 function TaskDetailsModal() {
   const {
@@ -13,6 +15,11 @@ function TaskDetailsModal() {
     currentListTitle,
     currentTask,
   } = useListStore();
+  const {authUser} = useAuthStore();
+  const {currentBoard} = useWorkspaceStore();
+
+  const member = currentBoard?.members.find((member) => member.userId === authUser._id);
+  const isViewer = member?.role === "Viewer";
 
   const dueDate = new Date(currentTask?.dueDate).toLocaleDateString("en-GB");
   const labels = currentTask?.labels?.map((label, idx) => ({
@@ -29,7 +36,7 @@ function TaskDetailsModal() {
     title: currentTask?.title || "",
     description: currentTask?.description || "",
     labels: labels || [],
-    assignees: currentTask?.assignedTo || [],
+    assignedTo: currentTask?.assignedTo || [],
   });
 
   const updateField = (field, value) => {
@@ -44,6 +51,10 @@ function TaskDetailsModal() {
     setIsEditing((prev) => ({ ...prev, [field]: false }));
   };
 
+  const handleSubmit = async () => {
+    console.log(details);
+  }
+
   useEffect(() => {
     const onLoadHandler = async () => {
       if (currentTask) {
@@ -51,7 +62,7 @@ function TaskDetailsModal() {
           title: currentTask.title,
           description: currentTask.description,
           labels: labels,
-          assignees: currentTask.assignedTo,
+          assignedTo: currentTask.assignedTo,
         });
       }
     };
@@ -87,6 +98,7 @@ function TaskDetailsModal() {
         <TaskTitle
           data={{
             isEditing: isEditing.taskTitle,
+            isViewer: isViewer,
             currentTitle: details.title,
             startEdit: startEdit,
             endEdit: endEdit,
@@ -102,6 +114,7 @@ function TaskDetailsModal() {
           <TaskLabels
             data={{
               isEditing: isEditing.taskLabels,
+              isViewer: isViewer,
               labels: details.labels,
               startEdit: startEdit,
               endEdit: endEdit,
@@ -112,7 +125,8 @@ function TaskDetailsModal() {
           {/* Assignees */}
           <TaskAssignees data={{
             isEditing: isEditing.taskAssignees,
-            assignees: details.assignees,
+            isViewer: isViewer,
+            assignees: details.assignedTo,
             startEdit: startEdit,
             endEdit: endEdit,
             updateField: updateField,
@@ -134,11 +148,20 @@ function TaskDetailsModal() {
         <TaskDescription
           data={{
             currentDescription: details.description,
+            isViewer: isViewer,
             startEdit: startEdit,
             endEdit: endEdit,
             updateField: updateField,
           }}
         />
+
+        {member.role !== "Viewer" &&
+        <button 
+          className="w-full bg-orange-400 font-semibold rounded-md py-2 mt-5"
+          onClick={handleSubmit}
+        >
+          Save Changes
+        </button>}
       </div>
     </article>
   );

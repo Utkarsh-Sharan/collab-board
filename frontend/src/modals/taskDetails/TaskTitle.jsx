@@ -1,4 +1,6 @@
 import { Edit } from "lucide-react";
+import { useAuthStore } from "../../store/useAuth.store";
+import { useWorkspaceStore } from "../../store/useWorkspace.store";
 
 function TaskTitle({ data }) {
   return (
@@ -16,10 +18,11 @@ function TaskTitle({ data }) {
         <h1 className="font-medium text-2xl">{data.currentTitle}</h1>
       )}
 
+      {!data?.isViewer && 
       <Edit
         className="text-teal-400 cursor-pointer"
         onClick={() => data.startEdit("taskTitle")}
-      />
+      />}
     </article>
   );
 }

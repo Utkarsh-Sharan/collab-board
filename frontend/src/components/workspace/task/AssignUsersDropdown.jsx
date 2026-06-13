@@ -1,56 +1,23 @@
 import { X } from "lucide-react";
 import { useState } from "react";
 import { useWorkspaceStore } from "../../../store/useWorkspace.store.js";
+import { useListStore } from "../../../store/useList.store.js";
 
-function AssignUsersDropdown({ onAssign }) {
+function AssignUsersDropdown({ localAssignees, handleSelect, showDropdown, setShowDropdown }) {
   const [query, setQuery] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [assignees, setAssignees] = useState([]);
 
   const { currentBoard } = useWorkspaceStore();
 
   const members = currentBoard.members;
-  console.log(members);
 
   const filteredMembers = members.filter(
     (m) =>
       m.fullName.toLowerCase().includes(query.toLowerCase()) &&
-      !assignees.some((a) => a._id === m._id),
+      !localAssignees.some((a) => a.userId === m.userId)
   );
-
-  const handleSelect = (member) => {
-    const newAssignees = [...assignees, member];
-
-    setAssignees(newAssignees);
-    // onAssign(newAssignees);
-
-    setQuery("");
-    setShowDropdown(false);
-  };
-
-  const removeAssignee = (id) => {
-    const updatedAssignees = assignees.filter((m) => m._id !== id);
-
-    setAssignees(updatedAssignees);
-    // onAssign(updatedAssignees);
-  };
 
   return (
     <div className="relative w-full mb-5">
-      <div className="flex flex-wrap gap-2 mb-2">
-        {assignees.map((a) => (
-          <span
-            key={a._id}
-            className="flex items-center bg-teal-300 text-teal-800 px-2 py-1 rounded-full text-sm"
-          >
-            {a.fullName}
-            <button onClick={() => removeAssignee(a._id)} className="ml-1">
-              <X size={17} />
-            </button>
-          </span>
-        ))}
-      </div>
-
       <label htmlFor="assign" className="text-sm font-light">
         Assign members
       </label>

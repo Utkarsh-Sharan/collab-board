@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 
 function EditAssigneesModal({ data }) {
   const [localAssignees, setLocalAssignees] = useState(data?.assignees);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     const onLoadHandler = async () => {
@@ -14,12 +15,13 @@ function EditAssigneesModal({ data }) {
     onLoadHandler();
   }, [data.isEditing, data.assignees]);
 
-  const addAssignee = (assignee) => {
-    setLocalAssignees((prev) => [...prev, assignee]);
+  const handleSelect = (member) => {
+    setLocalAssignees((prev) => [...prev, member]);
+    setShowDropdown(false);
   };
 
   const removeAssignee = (id) => {
-    if(localAssignees.length === 1) {
+    if (localAssignees.length === 1) {
       toast.error("Cannot remove last assignee!");
       return;
     }
@@ -87,7 +89,12 @@ function EditAssigneesModal({ data }) {
           ))}
         </div>
 
-        <AssignUsersDropdown onAssign={addAssignee} />
+        <AssignUsersDropdown
+          localAssignees={localAssignees}
+          handleSelect={handleSelect} 
+          showDropdown={showDropdown}
+          setShowDropdown={setShowDropdown}
+        />
 
         <button
           className="w-full bg-orange-400 font-semibold rounded-md py-2 mt-5"

@@ -1,6 +1,8 @@
 import { Edit, X } from "lucide-react";
 import { maxLabels } from "../../utils/constants.js";
 import { useEffect, useState } from "react";
+import { useAuthStore } from "../../store/useAuth.store.js";
+import { useWorkspaceStore } from "../../store/useWorkspace.store.js";
 
 function TaskLabels({ data }) {
   const [localLabels, setLocalLabels] = useState(data.labels);
@@ -46,11 +48,12 @@ function TaskLabels({ data }) {
       <div className="mb-3 flex justify-start items-center gap-2">
         <p className="text-sm text-gray-400">LABELS</p>
 
+        {!data.isViewer &&
         <Edit
           size={17}
           className="text-teal-400 cursor-pointer text-sm"
           onClick={() => data.startEdit("taskLabels")}
-        />
+        />}
 
         {data.isEditing && (
           // This is a dropdown to edit labels
