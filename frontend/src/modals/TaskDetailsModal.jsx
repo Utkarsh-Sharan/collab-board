@@ -95,8 +95,7 @@ function TaskDetailsModal() {
         </div>
 
         {/* Task title */}
-        <TaskTitle
-          data={{
+        <TaskTitle data={{
             isEditing: isEditing.taskTitle,
             isViewer: isViewer,
             currentTitle: details.title,
@@ -111,8 +110,7 @@ function TaskDetailsModal() {
         {/* Labels, assignees and due date */}
         <div className="flex justify-start items-start gap-10 mb-5">
           {/* Labels */}
-          <TaskLabels
-            data={{
+          <TaskLabels data={{
               isEditing: isEditing.taskLabels,
               isViewer: isViewer,
               labels: details.labels,
@@ -126,7 +124,7 @@ function TaskDetailsModal() {
           <TaskAssignees data={{
             isEditing: isEditing.taskAssignees,
             isViewer: isViewer,
-            assignees: details.assignedTo,
+            assignedTo: details.assignedTo,
             startEdit: startEdit,
             endEdit: endEdit,
             updateField: updateField,

@@ -1,4 +1,4 @@
-import { LoaderIcon } from "lucide-react";
+import { LoaderIcon, X } from "lucide-react";
 import { useState } from "react";
 import { useListStore } from "../../store/useList.store.js";
 import AssignUsersDropdown from "../workspace/task/AssignUsersDropdown.jsx";
@@ -13,12 +13,24 @@ function CreateNewTaskForm() {
     dueDate: null,
     labels: [],
   });
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [localAssignees, setLocalAssignees] = useState([]);
 
   const { currentList, isLoading, createTask } = useListStore();
   const { currentBoard } = useWorkspaceStore();
 
   const handleUserAssignment = (user) => {
     setNewTaskFormData((prev) => ({ ...prev, assignedTo: user }));
+    setLocalAssignees((prev) => [...prev, user]);
+    setShowDropdown(false);
+  };
+  
+  const removeAssignee = (id) => {
+    const updatedAssignees = localAssignees.filter(
+      (assignee) => assignee.userId !== id,
+    );
+
+    setLocalAssignees(updatedAssignees);
   };
 
   const handleLabelAssignment = (labels) => {
@@ -79,7 +91,26 @@ function CreateNewTaskForm() {
           onChange={handleChange}
         />
 
-        <AssignUsersDropdown onAssign={handleUserAssignment} />
+        <article className="flex justify-start items-center gap-1">
+          {localAssignees.length > 0 &&
+          localAssignees.map((assignee) => (
+            <div 
+              key={assignee.userId} 
+              className="text-teal-700 bg-teal-300 rounded-full px-2 inline-flex justify-center
+              items-center gap-1"
+            >
+              <p>{assignee.fullName}</p>
+              <X onClick={() => removeAssignee(assignee.userId)} />
+            </div>
+          ))}
+        </article>
+
+        <AssignUsersDropdown 
+          localAssignees={localAssignees}
+          handleSelect={handleUserAssignment}
+          showDropdown={showDropdown}
+          setShowDropdown={setShowDropdown}
+        />
 
         <label htmlFor="dueDate" className="text-sm font-light block">
           Due date

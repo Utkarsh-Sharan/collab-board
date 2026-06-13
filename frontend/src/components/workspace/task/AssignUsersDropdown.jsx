@@ -38,7 +38,7 @@ function AssignUsersDropdown({ localAssignees, handleSelect, showDropdown, setSh
         <ul className="absolute z-10 w-full bg-white border rounded mt-1 max-h-20 overflow-y-auto">
           {filteredMembers.map((member) => (
             <li
-              key={member._id}
+              key={member.userId}
               onClick={() => handleSelect(member)}
               className="px-3 py-2 cursor-pointer hover:bg-teal-100"
             >
