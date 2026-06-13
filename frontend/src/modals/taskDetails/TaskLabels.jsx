@@ -8,11 +8,6 @@ function TaskLabels({ data }) {
   const [localLabels, setLocalLabels] = useState(data.labels);
   const [label, setLabel] = useState("");
 
-  const {authUser} = useAuthStore();
-  const {currentBoard} = useWorkspaceStore();
-
-  const member = currentBoard?.members.find((member) => member.userId === authUser._id);
-
   useEffect(() => {
     const onLoadHandler = async () => {
       if (data.isEditing) setLocalLabels(data.labels);
@@ -53,7 +48,7 @@ function TaskLabels({ data }) {
       <div className="mb-3 flex justify-start items-center gap-2">
         <p className="text-sm text-gray-400">LABELS</p>
 
-        {member.role !== "Viewer" &&
+        {!data.isViewer &&
         <Edit
           size={17}
           className="text-teal-400 cursor-pointer text-sm"

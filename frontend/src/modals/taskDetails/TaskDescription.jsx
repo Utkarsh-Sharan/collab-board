@@ -3,11 +3,6 @@ import { useAuthStore } from "../../store/useAuth.store";
 import { useWorkspaceStore } from "../../store/useWorkspace.store";
 
 function TaskDescription({ data }) {
-  const {authUser} = useAuthStore();
-  const {currentBoard} = useWorkspaceStore();
-
-  const member = currentBoard?.members.find((member) => member.userId === authUser._id);
-
   return (
     <article>
       <div className="mb-2 flex justify-start items-center gap-2">
@@ -16,7 +11,7 @@ function TaskDescription({ data }) {
         <p className="font-semibold">Description</p>
       </div>
 
-      {member.role !== "Viewer" ?
+      {!data.isViewer ?
       <textarea
         value={data.currentDescription}
         onChange={(e) => data.updateField("description", e.target.value)}

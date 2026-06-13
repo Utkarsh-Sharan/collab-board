@@ -4,18 +4,13 @@ import { useAuthStore } from "../../store/useAuth.store";
 import { useWorkspaceStore } from "../../store/useWorkspace.store";
 
 function TaskAssignees({ data }) {
-  const {authUser} = useAuthStore();
-  const {currentBoard} = useWorkspaceStore();
-
-  const member = currentBoard?.members.find((member) => member.userId === authUser._id);
-
   return (
     <>
       <article>
         <div className="mb-3 flex justify-start items-center gap-2">
           <p className="text-sm text-gray-400">ASSIGNEES</p>
 
-          {member.role !== "Viewer" && 
+          {!data.isViewer && 
           <Edit
             size={17}
             className="text-teal-400 cursor-pointer text-sm"

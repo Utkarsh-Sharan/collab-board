@@ -3,26 +3,18 @@ import { useState } from "react";
 import { useWorkspaceStore } from "../../../store/useWorkspace.store.js";
 import { useListStore } from "../../../store/useList.store.js";
 
-function AssignUsersDropdown({ handleSelect, showDropdown, setShowDropdown }) {
+function AssignUsersDropdown({ localAssignees, handleSelect, showDropdown, setShowDropdown }) {
   const [query, setQuery] = useState("");
 
   const { currentBoard } = useWorkspaceStore();
-  const {currentTask} = useListStore();
 
   const members = currentBoard.members;
 
   const filteredMembers = members.filter(
     (m) =>
       m.fullName.toLowerCase().includes(query.toLowerCase()) &&
-      !currentTask?.assignedTo.some((a) => a.userId === m.userId)
+      !localAssignees.some((a) => a.userId === m.userId)
   );
-
-  const removeAssignee = (id) => {
-    const updatedAssignees = assignees.filter((m) => m._id !== id);
-
-    setAssignees(updatedAssignees);
-    // onAssign(updatedAssignees);
-  };
 
   return (
     <div className="relative w-full mb-5">

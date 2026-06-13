@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 
 function EditAssigneesModal({ data }) {
   const [localAssignees, setLocalAssignees] = useState(data?.assignees);
-  const [assignees, setAssignees] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
@@ -17,16 +16,8 @@ function EditAssigneesModal({ data }) {
   }, [data.isEditing, data.assignees]);
 
   const handleSelect = (member) => {
-    const newAssignees = [...assignees, member];
-
-    setAssignees(newAssignees);
-    // onAssign(newAssignees);
-
+    setLocalAssignees((prev) => [...prev, member]);
     setShowDropdown(false);
-  };
-
-  const addAssignee = (assignee) => {
-    setLocalAssignees((prev) => [...prev, assignee]);
   };
 
   const removeAssignee = (id) => {
@@ -98,21 +89,8 @@ function EditAssigneesModal({ data }) {
           ))}
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-2">
-          {assignees.map((a) => (
-            <span
-              key={a._id}
-              className="flex items-center bg-teal-300 text-teal-800 px-2 py-1 rounded-full text-sm"
-            >
-              {a.fullName}
-              <button onClick={() => removeAssignee(a._id)} className="ml-1">
-                <X size={17} />
-              </button>
-            </span>
-          ))}
-        </div>
-
-        <AssignUsersDropdown 
+        <AssignUsersDropdown
+          localAssignees={localAssignees}
           handleSelect={handleSelect} 
           showDropdown={showDropdown}
           setShowDropdown={setShowDropdown}

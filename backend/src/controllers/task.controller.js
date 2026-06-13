@@ -49,14 +49,14 @@ const getAllTasks = asyncHandler(async (req, res) => {
 
 const updateTask = asyncHandler(async (req, res) => {
   const task = req.task;
-  const { title, description, assignedTo, dueDate, labels } = req.body;
+  const { title, description, assignedTo, labels } = req.body;
 
   if (!assignedTo) throw new ApiError(400, "Assign task to at least 1 user!");
 
   task.title = title;
   task.description = description;
   task.assignedTo = assignedTo;
-  task.dueDate = dueDate;
+  // task.dueDate = dueDate;
   task.labels = labels;
 
   await task.save({ validateBeforeSave: false });
