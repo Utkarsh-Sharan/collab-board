@@ -34,7 +34,7 @@ function EditAssigneesModal({ data }) {
   };
 
   const saveChanges = () => {
-    data.updateField("assignees", localAssignees);
+    data.updateField("assignedTo", localAssignees);
     data.endEdit("taskAssignees");
   }
 

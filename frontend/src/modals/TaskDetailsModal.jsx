@@ -14,6 +14,8 @@ function TaskDetailsModal() {
     toggleTaskDetailsModal,
     currentListTitle,
     currentTask,
+    currentList,
+    updateTask,
   } = useListStore();
   const {authUser} = useAuthStore();
   const {currentBoard} = useWorkspaceStore();
@@ -51,8 +53,8 @@ function TaskDetailsModal() {
     setIsEditing((prev) => ({ ...prev, [field]: false }));
   };
 
-  const handleSubmit = async () => {
-    console.log(details);
+  const handleSubmit = () => {
+    updateTask(currentTask.boardId, currentTask.listId, details);
   }
 
   useEffect(() => {

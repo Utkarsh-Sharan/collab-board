@@ -133,4 +133,26 @@ export const useListStore = create((set, get) => ({
       toast.error(message);
     }
   },
+
+  updateTask: async (boardId, listId, data) => {
+    try {
+      const res = await axiosInstance.put(
+        `/boards/${boardId}/lists/${listId}/tasks/${get().currentTask._id}`,
+        data
+      );
+
+      get().toggleTaskDetailsModal();
+      get().reRenderList();
+
+      toast.success(res.data.message);
+    } catch (error) {
+      const backend = error?.response?.data;
+      const message =
+        (backend?.errors && Object.values(backend.errors)[0]) ||
+        backend?.message ||
+        "Something went wrong!";
+
+      toast.error(message);
+    }
+  },
 }));
