@@ -5,8 +5,6 @@ function TaskCard({ data, listTitle }) {
   const { setCurrentTask, setCurrentListTitle, toggleTaskDetailsModal } =
     useListStore();
 
-    console.log(data);
-
   const dueDate = new Date(data.dueDate).toLocaleDateString("en-GB");
   const labels = data.labels.map((label, idx) => ({
     id: `${label}-${idx}`,
