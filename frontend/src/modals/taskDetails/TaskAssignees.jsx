@@ -29,11 +29,12 @@ function TaskAssignees({ data }) {
               className={`${i === 0 ? "-z-10" : "z-10 absolute top-0 left-6"} w-8 h-8 rounded-full border border-white`}/>
           )) :
           <>
-            {currentTask.assignedTo.map((assignee, i) => (
+            {currentTask.assignedTo.map((assignee, i) => {
+              if(i >= 2) return;
               <img src={assignee.avatar}
                 alt="user-profile"
                 className={`${i === 0 ? "-z-10" : "z-10 absolute top-0 left-6"} w-8 h-8 rounded-full border border-white`}/>
-            ))}
+            })}
             <div className="absolute top-0 left-12 z-20 w-8 h-8 rounded-full bg-gray-200 border border-white text-center text-lg">
               {currentTask.assignedTo.length <= 9 ?
               `+${currentTask.assignedTo.length - 2}` :
