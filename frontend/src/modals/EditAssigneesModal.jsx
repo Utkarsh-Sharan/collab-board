@@ -4,16 +4,16 @@ import AssignUsersDropdown from "../components/workspace/task/AssignUsersDropdow
 import toast from "react-hot-toast";
 
 function EditAssigneesModal({ data }) {
-  const [localAssignees, setLocalAssignees] = useState(data?.assignees);
+  const [localAssignees, setLocalAssignees] = useState(data?.assignedTo);
   const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     const onLoadHandler = async () => {
-      if (data.isEditing) setLocalAssignees(data.assignees);
+      if (data.isEditing) setLocalAssignees(data.assignedTo);
     };
 
     onLoadHandler();
-  }, [data.isEditing, data.assignees]);
+  }, [data.isEditing, data.assignedTo]);
 
   const handleSelect = (member) => {
     setLocalAssignees((prev) => [...prev, member]);
@@ -34,7 +34,7 @@ function EditAssigneesModal({ data }) {
   };
 
   const saveChanges = () => {
-    data.updateField("assignees", localAssignees);
+    data.updateField("assignedTo", localAssignees);
     data.endEdit("taskAssignees");
   }
 

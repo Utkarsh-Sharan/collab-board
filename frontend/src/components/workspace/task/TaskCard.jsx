@@ -42,14 +42,15 @@ function TaskCard({ data, listTitle }) {
 
         <div className="relative z-30">
           <img
-            src="/collab-board-icon.png"
+            src={data.assignedTo[0].avatar}
             alt="user-profile"
-            className="absolute -z-10 right-4 top-0 w-6 h-6 rounded-full"
+            className={`${data.assignedTo.length > 1 && "absolute -z-10"} right-4 top-0 w-6 h-6 rounded-full`}
           />
-
+          
+          {data.assignedTo.length > 1 && 
           <div className="w-6 h-6 rounded-full bg-gray-200 text-center text-sm">
-            9+
-          </div>
+            {data.assignedTo.length <= 9 ? `+${data.assignedTo.length - 1}` : "9+"}
+          </div>}
         </div>
       </div>
     </article>
